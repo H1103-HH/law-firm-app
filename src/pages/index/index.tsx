@@ -107,13 +107,6 @@ const IndexPage: FC = () => {
             </View>
           </View>
         </View>
-
-        {/* 提示信息 */}
-        <View className="text-center pt-4">
-          <Text className="block text-xs text-gray-400">
-            正义律师事务所 · 专业法律服务
-          </Text>
-        </View>
       </View>
     </View>
   )
