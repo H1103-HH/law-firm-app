@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
-import { ArrowRight, Globe } from 'lucide-react-taro'
+import { ArrowRight } from 'lucide-react-taro'
 import type { FC } from 'react'
 import './index.css'
 
@@ -119,19 +119,8 @@ const PartnersPage: FC = () => {
   return (
     <View className="min-h-screen bg-gray-100">
       <ScrollView scrollY className="h-full">
-        {/* 页面标题 */}
-        <View className="bg-white px-4 py-4 mb-4">
-          <View className="flex items-center gap-2">
-            <Globe className="w-5 h-5 text-blue-600" />
-            <Text className="block text-lg font-bold text-gray-900">全球合伙人</Text>
-          </View>
-          <Text className="block text-sm text-gray-500 mt-1">
-            我们的精英律师团队遍布全球
-          </Text>
-        </View>
-
         {/* 合伙人列表 */}
-        <View className="px-4 pb-6">
+        <View className="px-4 pt-4 pb-6">
           <View className="space-y-4">
             {partners.map((partner) => (
               <View
@@ -154,7 +143,7 @@ const PartnersPage: FC = () => {
                         {partner.name}
                       </Text>
                       <View className="flex items-center gap-1">
-                        <Globe className="w-3 h-3 text-gray-400" />
+                        <ArrowRight className="w-3 h-3 text-gray-400" />
                         <Text className="text-xs text-gray-400">{partner.location}</Text>
                       </View>
                     </View>
@@ -178,11 +167,6 @@ const PartnersPage: FC = () => {
                         </View>
                       )}
                     </View>
-                  </View>
-
-                  {/* 箭头 */}
-                  <View className="flex items-center justify-center">
-                    <ArrowRight className="w-5 h-5 text-gray-400" />
                   </View>
                 </View>
               </View>
