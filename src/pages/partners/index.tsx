@@ -173,13 +173,6 @@ const PartnersPage: FC = () => {
             ))}
           </View>
         </View>
-
-        {/* 底部说明 */}
-        <View className="text-center pb-6 px-4">
-          <Text className="block text-xs text-gray-400">
-            共 {partners.length} 位全球合伙人
-          </Text>
-        </View>
       </ScrollView>
     </View>
   )
