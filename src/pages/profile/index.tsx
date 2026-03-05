@@ -183,27 +183,6 @@ const ProfilePage: FC = () => {
                 <Text className="block text-base font-medium">立即登录</Text>
               </View>
             </View>
-
-            {/* 功能介绍 */}
-            <View className="bg-white rounded-2xl p-5 shadow-sm">
-              <Text className="block text-base font-bold text-gray-900 mb-4">
-                功能介绍
-              </Text>
-              <View className="space-y-3">
-                <View className="flex items-start gap-3">
-                  <View className="w-1.5 h-1.5 rounded-full bg-blue-600 flex-shrink-0 mt-2" />
-                  <Text className="block text-sm text-gray-600 flex-1">
-                    客户：查看咨询内容，获得法律帮助
-                  </Text>
-                </View>
-                <View className="flex items-start gap-3">
-                  <View className="w-1.5 h-1.5 rounded-full bg-amber-600 flex-shrink-0 mt-2" />
-                  <Text className="block text-sm text-gray-600 flex-1">
-                    合伙人：查看咨询消息，提供法律服务
-                  </Text>
-                </View>
-              </View>
-            </View>
           </View>
         </ScrollView>
       </View>
