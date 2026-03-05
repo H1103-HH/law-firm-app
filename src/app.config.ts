@@ -11,13 +11,13 @@ export default defineAppConfig({
   ],
   window: {
     backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#1e3a8a',
+    navigationBarBackgroundColor: '#164616',
     navigationBarTitleText: '律师名片',
     navigationBarTextStyle: 'white'
   },
   tabBar: {
     color: '#999999',
-    selectedColor: '#1e3a8a',
+    selectedColor: '#164616',
     backgroundColor: '#ffffff',
     borderStyle: 'black',
     list: [

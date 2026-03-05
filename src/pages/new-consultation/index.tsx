@@ -53,7 +53,7 @@ const NewConsultationPage: FC = () => {
           {/* 咨询标题 */}
           <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
             <View className="flex items-center gap-2 mb-3">
-              <MessageCircle className="w-5 h-5 text-blue-600" />
+              <MessageCircle className="w-5 h-5 text-green-700" />
               <Text className="block text-base font-bold text-gray-900">
                 咨询标题
               </Text>
@@ -77,7 +77,7 @@ const NewConsultationPage: FC = () => {
           {/* 咨询内容 */}
           <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
             <View className="flex items-center gap-2 mb-3">
-              <Send className="w-5 h-5 text-blue-600" />
+              <Send className="w-5 h-5 text-green-700" />
               <Text className="block text-base font-bold text-gray-900">
                 咨询内容
               </Text>
@@ -100,7 +100,7 @@ const NewConsultationPage: FC = () => {
 
           {/* 提交按钮 */}
           <View
-            className="bg-blue-900 text-white rounded-2xl py-4 px-6 w-full text-center shadow-lg active:bg-blue-800"
+            className="bg-green-900 text-white rounded-2xl py-4 px-6 w-full text-center shadow-lg active:bg-green-800"
             onClick={handleSubmit}
           >
             <Text className="block text-base font-medium">提交咨询</Text>

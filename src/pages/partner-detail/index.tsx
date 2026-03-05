@@ -201,7 +201,7 @@ const PartnerDetailPage: FC = () => {
     <View className="min-h-screen bg-gray-100">
       <ScrollView scrollY className="h-full">
         {/* 头部信息卡片 */}
-        <View className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-b-3xl pt-8 pb-6 px-6 mb-4">
+        <View className="bg-gradient-to-br from-green-900 to-green-800 rounded-b-3xl pt-8 pb-6 px-6 mb-4">
           <View className="flex items-start gap-5">
             {/* 头像 */}
             <Image
@@ -215,12 +215,12 @@ const PartnerDetailPage: FC = () => {
               <Text className="block text-2xl font-bold text-white mb-2">
                 {partner.name}
               </Text>
-              <Text className="block text-base font-medium text-blue-100 mb-1">
+              <Text className="block text-base font-medium text-green-100 mb-1">
                 {partner.title}
               </Text>
               <View className="flex items-center gap-2 mt-2">
-                <Globe className="w-4 h-4 text-blue-200" />
-                <Text className="text-sm text-blue-200">{partner.location}</Text>
+                <Globe className="w-4 h-4 text-green-200" />
+                <Text className="text-sm text-green-200">{partner.location}</Text>
               </View>
             </View>
           </View>
@@ -233,11 +233,11 @@ const PartnerDetailPage: FC = () => {
               联系方式
             </Text>
             <View className="space-y-3">
-              <View className="flex items-center gap-3 bg-blue-50 rounded-xl px-4 py-3">
-                <Phone className="w-5 h-5 text-blue-600" />
+              <View className="flex items-center gap-3 bg-green-50 rounded-xl px-4 py-3">
+                <Phone className="w-5 h-5 text-green-700" />
                 <View className="flex-1">
                   <Text className="block text-sm text-gray-500 mb-0.5">电话</Text>
-                  <Text className="block text-base text-blue-600">{partner.phone}</Text>
+                  <Text className="block text-base text-green-700">{partner.phone}</Text>
                 </View>
                 <Button
                   size="mini"
@@ -278,7 +278,7 @@ const PartnerDetailPage: FC = () => {
                 </View>
               </View>
               <View className="flex items-start gap-3">
-                <Briefcase className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <Briefcase className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <View className="flex-1">
                   <Text className="block text-sm text-gray-500 mb-0.5">从业经验</Text>
                   <Text className="block text-base text-gray-900">{partner.experience}</Text>
@@ -292,7 +292,7 @@ const PartnerDetailPage: FC = () => {
                     {partner.specialties.map((specialty: string, index: number) => (
                       <View
                         key={index}
-                        className="bg-blue-50 text-blue-900 px-3 py-1 rounded-full"
+                        className="bg-green-50 text-green-900 px-3 py-1 rounded-full"
                       >
                         <Text className="text-xs font-medium">{specialty}</Text>
                       </View>
@@ -338,7 +338,7 @@ const PartnerDetailPage: FC = () => {
             <View className="space-y-2">
               {partner.cases.map((caseItem: string, index: number) => (
                 <View key={index} className="flex items-start gap-2">
-                  <View className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 mt-2" />
+                  <View className="w-1.5 h-1.5 rounded-full bg-green-600 flex-shrink-0 mt-2" />
                   <Text className="block text-sm text-gray-600 flex-1">
                     {caseItem}
                   </Text>

@@ -167,8 +167,8 @@ const ProfilePage: FC = () => {
           <View className="px-4 pt-16 pb-6">
             {/* 未登录提示 */}
             <View className="bg-white rounded-2xl p-8 shadow-sm text-center mb-6">
-              <View className="w-20 h-20 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center">
-                <User className="w-10 h-10 text-blue-600" />
+              <View className="w-20 h-20 rounded-full bg-green-100 mx-auto mb-4 flex items-center justify-center">
+                <User className="w-10 h-10 text-green-700" />
               </View>
               <Text className="block text-xl font-bold text-gray-900 mb-3">
                 登录后查看更多内容
@@ -177,7 +177,7 @@ const ProfilePage: FC = () => {
                 登录后可以查看咨询记录、管理个人信息等
               </Text>
               <View
-                className="bg-blue-900 text-white rounded-2xl py-4 px-6 w-full text-center active:bg-blue-800"
+                className="bg-green-900 text-white rounded-2xl py-4 px-6 w-full text-center active:bg-green-800"
                 onClick={handleLogin}
               >
                 <Text className="block text-base font-medium">立即登录</Text>
@@ -193,7 +193,7 @@ const ProfilePage: FC = () => {
     <View className="min-h-screen bg-gray-100">
       <ScrollView scrollY className="h-full">
         {/* 用户信息卡片 */}
-        <View className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-b-3xl pt-8 pb-6 px-6 mb-4">
+        <View className="bg-gradient-to-br from-green-900 to-green-800 rounded-b-3xl pt-8 pb-6 px-6 mb-4">
           <View className="flex items-start gap-4">
             <Image
               className="w-20 h-20 rounded-full object-cover border-4 border-white/20 flex-shrink-0"
@@ -205,13 +205,13 @@ const ProfilePage: FC = () => {
                 {userInfo.name || userInfo.nickname || '用户'}
               </Text>
               {userInfo.role === 'partner' && userInfo.title && (
-                <Text className="block text-base font-medium text-blue-100 mb-2">
+                <Text className="block text-base font-medium text-green-100 mb-2">
                   {userInfo.title}
                 </Text>
               )}
               <View className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-blue-200" />
-                <Text className="text-sm text-blue-200">
+                <Shield className="w-4 h-4 text-green-200" />
+                <Text className="text-sm text-green-200">
                   {userInfo.role === 'client' ? '客户' : '合伙人'}
                 </Text>
               </View>
@@ -227,7 +227,7 @@ const ProfilePage: FC = () => {
               <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
                 <View className="flex items-center justify-between mb-4">
                   <View className="flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5 text-blue-600" />
+                    <MessageCircle className="w-5 h-5 text-green-700" />
                     <Text className="block text-base font-bold text-gray-900">
                       我的咨询
                     </Text>
@@ -244,7 +244,7 @@ const ProfilePage: FC = () => {
                       暂无咨询记录
                     </Text>
                     <View
-                      className="bg-blue-900 text-white rounded-xl py-3 px-6 mx-auto w-fit"
+                      className="bg-green-900 text-white rounded-xl py-3 px-6 mx-auto w-fit"
                       onClick={handleNewConsultation}
                     >
                       <Text className="block text-sm font-medium">发起咨询</Text>
@@ -288,7 +288,7 @@ const ProfilePage: FC = () => {
                 {consultations.length > 0 && (
                   <View className="mt-4">
                     <View
-                      className="bg-blue-900 text-white rounded-xl py-3 px-6 w-full text-center active:bg-blue-800"
+                      className="bg-green-900 text-white rounded-xl py-3 px-6 w-full text-center active:bg-green-800"
                       onClick={handleNewConsultation}
                     >
                       <Text className="block text-sm font-medium">发起新咨询</Text>
@@ -306,7 +306,7 @@ const ProfilePage: FC = () => {
               <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
                 <View className="flex items-center justify-between mb-4">
                   <View className="flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5 text-blue-600" />
+                    <MessageCircle className="w-5 h-5 text-green-700" />
                     <Text className="block text-base font-bold text-gray-900">
                       咨询消息
                     </Text>
@@ -367,14 +367,14 @@ const ProfilePage: FC = () => {
           <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
             <View className="flex items-center justify-between p-4 border-b border-gray-100 active:bg-gray-50">
               <View className="flex items-center gap-3">
-                <BookOpen className="w-5 h-5 text-blue-600" />
+                <BookOpen className="w-5 h-5 text-green-700" />
                 <Text className="block text-sm text-gray-900">我的收藏</Text>
               </View>
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </View>
             <View className="flex items-center justify-between p-4 border-b border-gray-100 active:bg-gray-50">
               <View className="flex items-center gap-3">
-                <Settings className="w-5 h-5 text-blue-600" />
+                <Settings className="w-5 h-5 text-green-700" />
                 <Text className="block text-sm text-gray-900">设置</Text>
               </View>
               <ChevronRight className="w-5 h-5 text-gray-400" />

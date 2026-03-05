@@ -131,7 +131,7 @@ const PartnersPage: FC = () => {
                 <View className="flex items-start gap-4">
                   {/* 头像 */}
                   <Image
-                    className="w-16 h-16 rounded-full object-cover border-2 border-blue-100 flex-shrink-0"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
                     src={partner.avatar}
                     mode="aspectFill"
                   />
@@ -147,14 +147,14 @@ const PartnersPage: FC = () => {
                         <Text className="text-xs text-gray-400">{partner.location}</Text>
                       </View>
                     </View>
-                    <Text className="block text-sm font-medium text-blue-600 mb-2">
+                    <Text className="block text-sm font-medium text-green-700 mb-2">
                       {partner.title}
                     </Text>
                     <View className="flex flex-wrap gap-1">
                       {partner.specialties.slice(0, 2).map((specialty, index) => (
                         <View
                           key={index}
-                          className="bg-blue-50 text-blue-900 px-2 py-0.5 rounded-full"
+                          className="bg-green-50 text-green-900 px-2 py-0.5 rounded-full"
                         >
                           <Text className="text-xs">{specialty}</Text>
                         </View>

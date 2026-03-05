@@ -111,7 +111,7 @@ const LoginPage: FC = () => {
               <View
                 className={`bg-white rounded-2xl p-6 shadow-sm border-2 cursor-pointer ${
                   selectedRole === 'client'
-                    ? 'border-blue-600 bg-blue-50'
+                    ? 'border-green-700 bg-green-50'
                     : 'border-transparent'
                 }`}
                 onClick={() => setSelectedRole('client')}
@@ -120,7 +120,7 @@ const LoginPage: FC = () => {
                   <View
                     className={`w-12 h-12 rounded-full flex items-center justify-center ${
                       selectedRole === 'client'
-                        ? 'bg-blue-600'
+                        ? 'bg-green-700'
                         : 'bg-gray-100'
                     }`}
                   >
@@ -136,7 +136,7 @@ const LoginPage: FC = () => {
                     <Text
                       className={`block text-lg font-bold mb-1 ${
                         selectedRole === 'client'
-                          ? 'text-blue-900'
+                          ? 'text-green-900'
                           : 'text-gray-900'
                       }`}
                     >
@@ -145,7 +145,7 @@ const LoginPage: FC = () => {
                     <Text
                       className={`text-sm ${
                         selectedRole === 'client'
-                          ? 'text-blue-700'
+                          ? 'text-green-800'
                           : 'text-gray-500'
                       }`}
                     >
@@ -153,7 +153,7 @@ const LoginPage: FC = () => {
                     </Text>
                   </View>
                   {selectedRole === 'client' && (
-                    <View className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
+                    <View className="w-6 h-6 rounded-full bg-green-700 flex items-center justify-center">
                       <Text className="text-white text-xs">✓</Text>
                     </View>
                   )}

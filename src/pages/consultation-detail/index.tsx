@@ -100,7 +100,7 @@ const ConsultationDetailPage: FC = () => {
           {/* 咨询信息 */}
           <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
             <View className="flex items-center gap-2 mb-3">
-              <MessageCircle className="w-5 h-5 text-blue-600" />
+              <MessageCircle className="w-5 h-5 text-green-700" />
               <Text className="block text-base font-bold text-gray-900">
                 {consultation.title}
               </Text>
@@ -145,7 +145,7 @@ const ConsultationDetailPage: FC = () => {
           {consultation.status === 'replied' && consultation.reply ? (
             <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
               <View className="flex items-center gap-2 mb-3">
-                <User className="w-5 h-5 text-blue-600" />
+                <User className="w-5 h-5 text-green-700" />
                 <Text className="block text-base font-bold text-gray-900">
                   律师回复
                 </Text>
@@ -153,7 +153,7 @@ const ConsultationDetailPage: FC = () => {
               <Text className="block text-sm text-gray-500 mb-3">
                 {consultation.replyTime || ''}
               </Text>
-              <View className="bg-blue-50 rounded-xl p-4">
+              <View className="bg-green-50 rounded-xl p-4">
                 <Text className="block text-sm text-gray-900 leading-relaxed whitespace-pre-line">
                   {consultation.reply || ''}
                 </Text>
@@ -175,7 +175,7 @@ const ConsultationDetailPage: FC = () => {
           ) : userType === 'partner' && consultation.status === 'pending' && (
             <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
               <View className="flex items-center gap-2 mb-3">
-                <User className="w-5 h-5 text-blue-600" />
+                <User className="w-5 h-5 text-green-700" />
                 <Text className="block text-base font-bold text-gray-900">
                   添加回复
                 </Text>
@@ -190,7 +190,7 @@ const ConsultationDetailPage: FC = () => {
                 />
               </View>
               <View
-                className="bg-blue-900 text-white rounded-xl py-3 px-6 w-full text-center active:bg-blue-800"
+                className="bg-green-900 text-white rounded-xl py-3 px-6 w-full text-center active:bg-green-800"
                 onClick={handleSendReply}
               >
                 <Text className="block text-sm font-medium">发送回复</Text>

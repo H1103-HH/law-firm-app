@@ -70,7 +70,7 @@ const IndexPage: FC = () => {
           onClick={handleGoToWebsite}
         >
           <View className="flex items-center gap-4">
-            <View className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+            <View className="w-12 h-12 bg-green-700 rounded-xl flex items-center justify-center flex-shrink-0">
               <ExternalLink className="w-6 h-6 text-white" />
             </View>
             <View className="flex-1">
