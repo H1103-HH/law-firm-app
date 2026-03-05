@@ -1,6 +1,5 @@
 import { View, Text, Image } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
-import { ExternalLink, MessageSquare } from 'lucide-react-taro'
 import type { FC } from 'react'
 import './index.css'
 
@@ -63,45 +62,25 @@ const IndexPage: FC = () => {
       />
 
       {/* 按钮区域 - 悬浮在图片上 */}
-      <View className="absolute inset-0 flex flex-col justify-end pb-12 px-6">
+      <View className="absolute inset-0 flex flex-col items-center justify-center px-6">
         {/* 访问官网按钮 */}
         <View
-          className="bg-white rounded-2xl p-5 shadow-lg active:scale-95 transition-transform mb-4"
+          className="bg-white rounded-xl px-8 py-3 shadow-lg active:scale-95 transition-transform mb-3 w-full max-w-xs"
           onClick={handleGoToWebsite}
         >
-          <View className="flex items-center gap-4">
-            <View className="w-12 h-12 bg-green-700 rounded-xl flex items-center justify-center flex-shrink-0">
-              <ExternalLink className="w-6 h-6 text-white" />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-lg font-bold text-gray-900 mb-1">
-                访问官网
-              </Text>
-              <Text className="block text-sm text-gray-600">
-                了解更多律所信息
-              </Text>
-            </View>
-          </View>
+          <Text className="block text-base font-bold text-gray-900 text-center">
+            访问官网
+          </Text>
         </View>
 
         {/* 关注公众号按钮 */}
         <View
-          className="bg-white rounded-2xl p-5 shadow-lg active:scale-95 transition-transform"
+          className="bg-white rounded-xl px-8 py-3 shadow-lg active:scale-95 transition-transform w-full max-w-xs"
           onClick={handleGoToOfficialAccount}
         >
-          <View className="flex items-center gap-4">
-            <View className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
-              <MessageSquare className="w-6 h-6 text-white" />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-lg font-bold text-gray-900 mb-1">
-                关注公众号
-              </Text>
-              <Text className="block text-sm text-gray-600">
-                获取最新法律资讯
-              </Text>
-            </View>
-          </View>
+          <Text className="block text-base font-bold text-gray-900 text-center">
+            关注公众号
+          </Text>
         </View>
       </View>
     </View>
