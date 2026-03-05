@@ -54,67 +54,52 @@ const IndexPage: FC = () => {
   }
 
   return (
-    <View className="min-h-screen bg-white">
-      {/* 律所图片 */}
-      <View className="w-full h-[60vh] relative overflow-hidden">
-        <Image
-          src="https://code.coze.cn/api/sandbox/coze_coding/file/proxy?expire_time=-1&file_path=assets%2F%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260224134815_5770_85%281%29.jpg&nonce=3119fa86-ebb0-49f7-9a9d-678199ab7856&project_id=7613615424479035434&sign=c0e2526210e47f7a2113b60195b5d8cf8ad4e4121317b5ac92d0e21d3f77bc71"
-          mode="aspectFill"
-          className="w-full h-full"
-        />
-      </View>
+    <View className="relative w-full h-screen overflow-hidden">
+      {/* 全屏背景图片 */}
+      <Image
+        src="https://code.coze.cn/api/sandbox/coze_coding/file/proxy?expire_time=-1&file_path=assets%2F%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260224134815_5770_85%281%29.jpg&nonce=3119fa86-ebb0-49f7-9a9d-678199ab7856&project_id=7613615424479035434&sign=c0e2526210e47f7a2113b60195b5d8cf8ad4e4121317b5ac92d0e21d3f77bc71"
+        mode="aspectFill"
+        className="absolute inset-0 w-full h-full"
+      />
 
-      {/* 白色区域 */}
-      <View className="relative -mt-8 bg-white rounded-t-3xl px-6 pt-8 pb-12 min-h-[40vh]">
-        {/* 律所名称 */}
-        <View className="text-center mb-8">
-          <Text className="block text-2xl font-bold text-gray-900 mb-2">
-            正义律师事务所
-          </Text>
-          <Text className="block text-sm text-gray-600">
-            专业法律服务 · 值得信赖
-          </Text>
-        </View>
-
-        {/* 按钮区域 */}
-        <View className="space-y-4">
-          {/* 访问官网按钮 */}
-          <View
-            className="bg-blue-600 rounded-2xl p-5 shadow-sm active:shadow-md active:scale-[0.98] transition-all"
-            onClick={handleGoToWebsite}
-          >
-            <View className="flex items-center gap-4">
-              <View className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <ExternalLink className="w-6 h-6 text-white" />
-              </View>
-              <View className="flex-1">
-                <Text className="block text-lg font-bold text-white mb-1">
-                  访问官网
-                </Text>
-                <Text className="block text-sm text-white/90">
-                  了解更多律所信息
-                </Text>
-              </View>
+      {/* 按钮区域 - 悬浮在图片上 */}
+      <View className="absolute inset-0 flex flex-col justify-end pb-12 px-6">
+        {/* 访问官网按钮 */}
+        <View
+          className="bg-white rounded-2xl p-5 shadow-lg active:scale-95 transition-transform mb-4"
+          onClick={handleGoToWebsite}
+        >
+          <View className="flex items-center gap-4">
+            <View className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+              <ExternalLink className="w-6 h-6 text-white" />
+            </View>
+            <View className="flex-1">
+              <Text className="block text-lg font-bold text-gray-900 mb-1">
+                访问官网
+              </Text>
+              <Text className="block text-sm text-gray-600">
+                了解更多律所信息
+              </Text>
             </View>
           </View>
+        </View>
 
-          {/* 关注公众号按钮 */}
-          <View
-            className="bg-green-600 rounded-2xl p-5 shadow-sm active:shadow-md active:scale-[0.98] transition-all"
-            onClick={handleGoToOfficialAccount}
-          >
-            <View className="flex items-center gap-4">
-              <View className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <MessageSquare className="w-6 h-6 text-white" />
-              </View>
-              <View className="flex-1">
-                <Text className="block text-lg font-bold text-white mb-1">
-                  关注公众号
-                </Text>
-                <Text className="block text-sm text-white/90">
-                  获取最新法律资讯
-                </Text>
-              </View>
+        {/* 关注公众号按钮 */}
+        <View
+          className="bg-white rounded-2xl p-5 shadow-lg active:scale-95 transition-transform"
+          onClick={handleGoToOfficialAccount}
+        >
+          <View className="flex items-center gap-4">
+            <View className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+              <MessageSquare className="w-6 h-6 text-white" />
+            </View>
+            <View className="flex-1">
+              <Text className="block text-lg font-bold text-gray-900 mb-1">
+                关注公众号
+              </Text>
+              <Text className="block text-sm text-gray-600">
+                获取最新法律资讯
+              </Text>
             </View>
           </View>
         </View>
