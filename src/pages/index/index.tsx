@@ -65,7 +65,7 @@ const IndexPage: FC = () => {
       <View className="absolute inset-0 flex flex-col items-center px-6 pt-[25vh]">
         {/* 访问官网按钮 */}
         <View
-          className="bg-white rounded-xl px-8 py-3 shadow-lg active:scale-95 transition-transform mb-3 w-full max-w-xs"
+          className="bg-white rounded-xl px-8 py-3 shadow-lg active:scale-95 transition-transform mb-8 w-full max-w-xs"
           onClick={handleGoToWebsite}
         >
           <Text className="block text-base font-bold text-gray-900 text-center">
