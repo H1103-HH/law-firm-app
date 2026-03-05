@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image } from '@tarojs/components'
-import Taro, { useLoad } from '@tarojs/taro'
+import Taro, { useLoad, useDidShow } from '@tarojs/taro'
 import { useState } from 'react'
 import {
   MessageCircle,
@@ -7,9 +7,11 @@ import {
   Settings,
   LogOut,
   Shield,
-  ChevronRight
+  ChevronRight,
+  User
 } from 'lucide-react-taro'
 import type { FC } from 'react'
+import { Network } from '@/network'
 import './index.css'
 
 interface Consultation {
@@ -24,9 +26,19 @@ interface Consultation {
   replyTime?: string
 }
 
+interface UserInfo {
+  id: number
+  openid: string
+  nickname?: string
+  avatar?: string
+  role: 'client' | 'partner'
+  token: string
+  name?: string
+  title?: string
+}
+
 const ProfilePage: FC = () => {
-  const [userType, setUserType] = useState<'client' | 'partner' | null>(null)
-  const [userInfo, setUserInfo] = useState<any>(null)
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [consultations, setConsultations] = useState<Consultation[]>([])
 
   useLoad(() => {
@@ -34,77 +46,85 @@ const ProfilePage: FC = () => {
     loadUserInfo()
   })
 
+  useDidShow(() => {
+    // 页面显示时重新加载用户信息（登录后返回）
+    loadUserInfo()
+  })
+
   const loadUserInfo = async () => {
     try {
-      // 模拟获取用户信息，实际应该从后端获取
-      const mockUserType = 'client' // 可以切换为 'partner' 测试合伙人视图
-      setUserType(mockUserType)
-
-      if (mockUserType === 'client') {
-        setUserInfo({
-          name: '张三',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop',
-          phone: '138-0000-9999',
-          email: 'zhangsan@example.com'
-        })
-        // 模拟客户的咨询记录
-        setConsultations([
-          {
-            id: 1,
-            title: '关于公司注册的咨询',
-            content: '您好，我想咨询一下公司注册的相关流程和需要准备的材料。',
-            status: 'replied',
-            createTime: '2024-03-01 10:30',
-            lawyerName: '张律师',
-            lawyerAvatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop',
-            reply: '您好，公司注册需要准备以下材料：1. 公司章程 2. 股东身份证明 3. 注册地址证明等。具体流程可以参考我们官网的详细指南。',
-            replyTime: '2024-03-01 14:20'
-          },
-          {
-            id: 2,
-            title: '劳动合同纠纷咨询',
-            content: '我想咨询一下劳动合同解除的相关法律问题。',
-            status: 'pending',
-            createTime: '2024-03-05 09:15'
-          }
-        ])
-      } else {
-        setUserInfo({
-          name: '张律师',
-          title: '高级合伙人',
-          avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop',
-          phone: '138-0000-0001',
-          email: 'zhang@lawfirm.com'
-        })
-        // 模拟合伙人收到的咨询消息
-        setConsultations([
-          {
-            id: 1,
-            title: '关于公司注册的咨询',
-            content: '您好，我想咨询一下公司注册的相关流程和需要准备的材料。',
-            status: 'replied',
-            createTime: '2024-03-01 10:30',
-            reply: '您好，公司注册需要准备以下材料：1. 公司章程 2. 股东身份证明 3. 注册地址证明等。具体流程可以参考我们官网的详细指南。',
-            replyTime: '2024-03-01 14:20'
-          },
-          {
-            id: 3,
-            title: '房产纠纷咨询',
-            content: '您好，我遇到了房产纠纷问题，想咨询一下如何处理。',
-            status: 'pending',
-            createTime: '2024-03-06 11:20'
-          }
-        ])
+      const storedUserInfo = Taro.getStorageSync('userInfo')
+      if (storedUserInfo) {
+        setUserInfo(storedUserInfo)
+        // 加载咨询数据
+        loadConsultations(storedUserInfo.role)
       }
     } catch (error) {
       console.error('加载用户信息失败:', error)
     }
   }
 
+  const loadConsultations = async (userType: 'client' | 'partner') => {
+    try {
+      const res = await Network.request({
+        url: '/api/consultations',
+        data: { userType }
+      })
+
+      if (res.data.code === 200) {
+        setConsultations(res.data.data || [])
+      }
+    } catch (error) {
+      console.error('加载咨询数据失败:', error)
+      // 使用模拟数据
+      const mockConsultations: Consultation[] =
+        userType === 'client'
+          ? [
+              {
+                id: 1,
+                title: '关于公司注册的咨询',
+                content: '您好，我想咨询一下公司注册的相关流程和需要准备的材料。',
+                status: 'replied',
+                createTime: '2024-03-01 10:30',
+                lawyerName: '张律师',
+                lawyerAvatar:
+                  'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop',
+                reply: '您好，公司注册需要准备以下材料：1. 公司章程 2. 股东身份证明 3. 注册地址证明等。',
+                replyTime: '2024-03-01 14:20'
+              },
+              {
+                id: 2,
+                title: '劳动合同纠纷咨询',
+                content: '我想咨询一下劳动合同解除的相关法律问题。',
+                status: 'pending',
+                createTime: '2024-03-05 09:15'
+              }
+            ]
+          : [
+              {
+                id: 1,
+                title: '关于公司注册的咨询',
+                content: '您好，我想咨询一下公司注册的相关流程和需要准备的材料。',
+                status: 'replied',
+                createTime: '2024-03-01 10:30',
+                reply: '您好，公司注册需要准备以下材料：1. 公司章程 2. 股东身份证明 3. 注册地址证明等。',
+                replyTime: '2024-03-01 14:20'
+              },
+              {
+                id: 3,
+                title: '房产纠纷咨询',
+                content: '您好，我遇到了房产纠纷问题，想咨询一下如何处理。',
+                status: 'pending',
+                createTime: '2024-03-06 11:20'
+              }
+            ]
+      setConsultations(mockConsultations)
+    }
+  }
+
   const handleConsultationClick = (consultation: Consultation) => {
-    // 跳转到咨询详情页
     Taro.navigateTo({
-      url: `/pages/consultation-detail/index?id=${consultation.id}&type=${userType}`
+      url: `/pages/consultation-detail/index?id=${consultation.id}&type=${userInfo?.role}`
     })
   }
 
@@ -114,20 +134,78 @@ const ProfilePage: FC = () => {
     })
   }
 
-  const handleSwitchRole = () => {
-    const newRole = userType === 'client' ? 'partner' : 'client'
-    setUserType(newRole)
-    loadUserInfo()
-    Taro.showToast({
-      title: `已切换为${newRole === 'client' ? '客户' : '合伙人'}视角`,
-      icon: 'success'
+  const handleLogout = () => {
+    Taro.showModal({
+      title: '提示',
+      content: '确定要退出登录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          Taro.removeStorageSync('userInfo')
+          Taro.removeStorageSync('token')
+          setUserInfo(null)
+          setConsultations([])
+          Taro.showToast({
+            title: '已退出登录',
+            icon: 'success'
+          })
+        }
+      }
     })
   }
 
-  if (!userType || !userInfo) {
+  const handleLogin = () => {
+    Taro.navigateTo({
+      url: '/pages/login/index'
+    })
+  }
+
+  // 未登录状态
+  if (!userInfo) {
     return (
-      <View className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <Text className="block text-gray-500">加载中...</Text>
+      <View className="min-h-screen bg-gray-100">
+        <ScrollView scrollY className="h-full">
+          <View className="px-4 pt-16 pb-6">
+            {/* 未登录提示 */}
+            <View className="bg-white rounded-2xl p-8 shadow-sm text-center mb-6">
+              <View className="w-20 h-20 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center">
+                <User className="w-10 h-10 text-blue-600" />
+              </View>
+              <Text className="block text-xl font-bold text-gray-900 mb-3">
+                登录后查看更多内容
+              </Text>
+              <Text className="block text-sm text-gray-500 mb-6">
+                登录后可以查看咨询记录、管理个人信息等
+              </Text>
+              <View
+                className="bg-blue-900 text-white rounded-2xl py-4 px-6 w-full text-center active:bg-blue-800"
+                onClick={handleLogin}
+              >
+                <Text className="block text-base font-medium">立即登录</Text>
+              </View>
+            </View>
+
+            {/* 功能介绍 */}
+            <View className="bg-white rounded-2xl p-5 shadow-sm">
+              <Text className="block text-base font-bold text-gray-900 mb-4">
+                功能介绍
+              </Text>
+              <View className="space-y-3">
+                <View className="flex items-start gap-3">
+                  <View className="w-1.5 h-1.5 rounded-full bg-blue-600 flex-shrink-0 mt-2" />
+                  <Text className="block text-sm text-gray-600 flex-1">
+                    客户：查看咨询内容，获得法律帮助
+                  </Text>
+                </View>
+                <View className="flex items-start gap-3">
+                  <View className="w-1.5 h-1.5 rounded-full bg-amber-600 flex-shrink-0 mt-2" />
+                  <Text className="block text-sm text-gray-600 flex-1">
+                    合伙人：查看咨询消息，提供法律服务
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     )
   }
@@ -140,14 +218,14 @@ const ProfilePage: FC = () => {
           <View className="flex items-start gap-4">
             <Image
               className="w-20 h-20 rounded-full object-cover border-4 border-white/20 flex-shrink-0"
-              src={userInfo.avatar}
+              src={userInfo.avatar || ''}
               mode="aspectFill"
             />
             <View className="flex-1 pt-1">
               <Text className="block text-xl font-bold text-white mb-1">
-                {userInfo.name}
+                {userInfo.name || userInfo.nickname || '用户'}
               </Text>
-              {userType === 'partner' && (
+              {userInfo.role === 'partner' && userInfo.title && (
                 <Text className="block text-base font-medium text-blue-100 mb-2">
                   {userInfo.title}
                 </Text>
@@ -155,7 +233,7 @@ const ProfilePage: FC = () => {
               <View className="flex items-center gap-2">
                 <Shield className="w-4 h-4 text-blue-200" />
                 <Text className="text-sm text-blue-200">
-                  {userType === 'client' ? '客户' : '合伙人'}
+                  {userInfo.role === 'client' ? '客户' : '合伙人'}
                 </Text>
               </View>
             </View>
@@ -163,22 +241,8 @@ const ProfilePage: FC = () => {
         </View>
 
         <View className="px-4 pb-6">
-          {/* 切换角色（仅用于演示） */}
-          <View
-            className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-center justify-between"
-            onClick={handleSwitchRole}
-          >
-            <View className="flex items-center gap-3">
-              <Shield className="w-5 h-5 text-amber-600" />
-              <Text className="text-sm text-amber-800">
-                当前：{userType === 'client' ? '客户' : '合伙人'}（点击切换）
-              </Text>
-            </View>
-            <ChevronRight className="w-5 h-5 text-amber-600" />
-          </View>
-
           {/* 客户视图 */}
-          {userType === 'client' && (
+          {userInfo.role === 'client' && (
             <>
               {/* 我的咨询 */}
               <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
@@ -257,7 +321,7 @@ const ProfilePage: FC = () => {
           )}
 
           {/* 合伙人视图 */}
-          {userType === 'partner' && (
+          {userInfo.role === 'partner' && (
             <>
               {/* 咨询消息 */}
               <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
@@ -336,7 +400,10 @@ const ProfilePage: FC = () => {
               </View>
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </View>
-            <View className="flex items-center justify-between p-4 active:bg-gray-50">
+            <View
+              className="flex items-center justify-between p-4 active:bg-gray-50"
+              onClick={handleLogout}
+            >
               <View className="flex items-center gap-3">
                 <LogOut className="w-5 h-5 text-red-500" />
                 <Text className="block text-sm text-red-500">退出登录</Text>

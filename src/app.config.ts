@@ -6,7 +6,8 @@ export default defineAppConfig({
     'pages/partner-detail/index',
     'pages/consultation-detail/index',
     'pages/new-consultation/index',
-    'pages/webview/index'
+    'pages/webview/index',
+    'pages/login/index'
   ],
   window: {
     backgroundTextStyle: 'light',
