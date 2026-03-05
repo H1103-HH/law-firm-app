@@ -54,23 +54,21 @@ const IndexPage: FC = () => {
   }
 
   return (
-    <View className="min-h-screen bg-gray-50">
-      {/* 律所图片 */}
-      <View className="w-full aspect-[3/2] relative overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-          mode="aspectFill"
-          className="w-full h-full"
-        />
-        {/* 遮罩层 */}
-        <View className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50" />
-      </View>
+    <View className="relative w-full h-screen overflow-hidden">
+      {/* 全屏背景图片 */}
+      <Image
+        src="https://code.coze.cn/api/sandbox/coze_coding/file/proxy?expire_time=-1&file_path=assets%2F%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260224134815_5770_85%281%29.jpg&nonce=3119fa86-ebb0-49f7-9a9d-678199ab7856&project_id=7613615424479035434&sign=c0e2526210e47f7a2113b60195b5d8cf8ad4e4121317b5ac92d0e21d3f77bc71"
+        mode="aspectFill"
+        className="absolute inset-0 w-full h-full"
+      />
+      {/* 遮罩层 */}
+      <View className="absolute inset-0 bg-black/40" />
 
-      {/* 按钮区域 */}
-      <View className="px-6 py-8 space-y-4">
+      {/* 按钮区域 - 浮动在图片上 */}
+      <View className="absolute inset-0 flex flex-col justify-end pb-12 px-6">
         {/* 访问官网按钮 */}
         <View
-          className="bg-white rounded-2xl p-5 shadow-sm active:shadow-md transition-shadow"
+          className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 shadow-lg active:scale-95 transition-transform mb-4"
           onClick={handleGoToWebsite}
         >
           <View className="flex items-center gap-4">
@@ -81,7 +79,7 @@ const IndexPage: FC = () => {
               <Text className="block text-lg font-bold text-gray-900 mb-1">
                 访问官网
               </Text>
-              <Text className="block text-sm text-gray-500">
+              <Text className="block text-sm text-gray-600">
                 了解更多律所信息
               </Text>
             </View>
@@ -90,7 +88,7 @@ const IndexPage: FC = () => {
 
         {/* 关注公众号按钮 */}
         <View
-          className="bg-white rounded-2xl p-5 shadow-sm active:shadow-md transition-shadow"
+          className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 shadow-lg active:scale-95 transition-transform"
           onClick={handleGoToOfficialAccount}
         >
           <View className="flex items-center gap-4">
@@ -101,7 +99,7 @@ const IndexPage: FC = () => {
               <Text className="block text-lg font-bold text-gray-900 mb-1">
                 关注公众号
               </Text>
-              <Text className="block text-sm text-gray-500">
+              <Text className="block text-sm text-gray-600">
                 获取最新法律资讯
               </Text>
             </View>
