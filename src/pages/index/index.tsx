@@ -62,7 +62,7 @@ const IndexPage: FC = () => {
       />
 
       {/* 按钮区域 - 悬浮在图片上 */}
-      <View className="absolute inset-0 flex flex-col items-center justify-start px-6 mt-[-25vh]">
+      <View className="absolute inset-0 flex flex-col items-center px-6 pt-[25vh]">
         {/* 访问官网按钮 */}
         <View
           className="bg-white rounded-xl px-8 py-3 shadow-lg active:scale-95 transition-transform mb-3 w-full max-w-xs"
