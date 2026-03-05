@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
-import Taro, { useLoad } from '@tarojs/taro'
+import Taro, { useLoad, useShareAppMessage } from '@tarojs/taro'
 import { useState } from 'react'
-import { Phone, Mail, Globe, Award, GraduationCap, Briefcase } from 'lucide-react-taro'
+import { Phone, Mail, Globe, Award, GraduationCap, Briefcase, Share2 } from 'lucide-react-taro'
 import type { FC } from 'react'
 import './index.css'
 
@@ -169,6 +169,16 @@ const PartnerDetailPage: FC = () => {
     console.log('合伙人详情页加载:', partnerData.name)
   })
 
+  // 分享配置
+  useShareAppMessage(() => {
+    if (!partner) return {}
+    return {
+      title: `${partner.name} - ${partner.title}`,
+      path: `/pages/partner-detail/index?id=${partner.id}`,
+      imageUrl: partner.avatar
+    }
+  })
+
   // 拨打电话
   const handleCall = (phone: string) => {
     Taro.makePhoneCall({
@@ -186,6 +196,15 @@ const PartnerDetailPage: FC = () => {
           icon: 'success'
         })
       }
+    })
+  }
+
+  // 分享名片
+  const handleShare = () => {
+    if (!partner) return
+
+    Taro.showShareMenu({
+      withShareTicket: true
     })
   }
 
@@ -222,6 +241,14 @@ const PartnerDetailPage: FC = () => {
                 <Globe className="w-4 h-4 text-green-200" />
                 <Text className="text-sm text-green-200">{partner.location}</Text>
               </View>
+            </View>
+
+            {/* 分享按钮 */}
+            <View
+              className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 active:bg-white/30"
+              onClick={handleShare}
+            >
+              <Share2 className="w-5 h-5 text-white" />
             </View>
           </View>
         </View>
