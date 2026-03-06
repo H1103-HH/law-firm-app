@@ -380,16 +380,6 @@ const ProfilePage: FC = () => {
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </View>
             <View
-              className="flex items-center justify-between p-4 border-b border-gray-100 active:bg-gray-50"
-              onClick={() => Taro.navigateTo({ url: '/pages/admin/login' })}
-            >
-              <View className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-blue-600" />
-                <Text className="block text-sm text-blue-600">管理员入口</Text>
-              </View>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </View>
-            <View
               className="flex items-center justify-between p-4 active:bg-gray-50"
               onClick={handleLogout}
             >
@@ -399,6 +389,16 @@ const ProfilePage: FC = () => {
               </View>
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </View>
+          </View>
+
+          {/* 管理员入口（不显眼，放在底部角落） */}
+          <View className="mt-4 text-right">
+            <Text
+              className="text-xs text-gray-300"
+              onClick={() => Taro.navigateTo({ url: '/pages/admin/login' })}
+            >
+              管理员入口
+            </Text>
           </View>
         </View>
 
