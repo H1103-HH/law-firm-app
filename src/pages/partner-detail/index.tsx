@@ -3,10 +3,19 @@ import Taro, { useLoad, useShareAppMessage } from '@tarojs/taro'
 import { useState } from 'react'
 import { Phone, Mail, Globe, Award, GraduationCap, Briefcase, Share2 } from 'lucide-react-taro'
 import type { FC } from 'react'
+import type { Partner } from '@/data/partners'
 import './index.css'
 
-// 合伙人详细数据
-const partnerDetails: Record<number, any> = {
+// 扩展的合伙人详细信息（包含联系方式和案例）
+interface PartnerDetail extends Partner {
+  phone: string
+  email: string
+  website?: string
+  cases: string[]
+}
+
+// 合伙人详细数据（扩展基本信息）
+const partnerDetails: Record<number, PartnerDetail> = {
   1: {
     id: 1,
     name: '张律师',
