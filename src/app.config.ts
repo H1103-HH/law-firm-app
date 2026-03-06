@@ -7,7 +7,10 @@ export default defineAppConfig({
     'pages/consultation-detail/index',
     'pages/new-consultation/index',
     'pages/webview/index',
-    'pages/login/index'
+    'pages/login/index',
+    'pages/admin/login',
+    'pages/admin/lawyers',
+    'pages/admin/lawyer-form'
   ],
   window: {
     backgroundTextStyle: 'light',

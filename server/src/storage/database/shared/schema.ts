@@ -1,0 +1,78 @@
+import { pgTable, serial, timestamp, varchar, text, integer, jsonb, index, boolean } from "drizzle-orm/pg-core"
+import { sql } from "drizzle-orm"
+import { createSchemaFactory } from "drizzle-zod"
+import { z } from "zod"
+
+// 保留系统表
+export const healthCheck = pgTable("health_check", {
+	id: serial().notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),
+});
+
+// 管理员表
+export const admins = pgTable("admins", {
+  id: serial("id").primaryKey(),
+  username: varchar("username", { length: 50 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
+  name: varchar("name", { length: 100 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+}, (table) => [
+  index("admins_username_idx").on(table.username),
+])
+
+// 律师信息表
+export const lawyers = pgTable("lawyers", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  title: varchar("title", { length: 100 }).notNull(),
+  avatar: varchar("avatar", { length: 500 }).notNull(),
+  location: varchar("location", { length: 100 }).notNull(),
+  specialties: jsonb("specialties").$type<string[]>().notNull(),
+  experience: varchar("experience", { length: 50 }).notNull(),
+  education: varchar("education", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  achievements: jsonb("achievements").$type<string[]>().notNull(),
+  phone: varchar("phone", { length: 50 }),
+  email: varchar("email", { length: 200 }),
+  website: varchar("website", { length: 500 }),
+  cases: jsonb("cases").$type<string[]>().notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+}, (table) => [
+  index("lawyers_name_idx").on(table.name),
+  index("lawyers_location_idx").on(table.location),
+  index("lawyers_is_active_idx").on(table.isActive),
+])
+
+// Zod Schemas for validation
+const { createInsertSchema: createCoercedInsertSchema } = createSchemaFactory({
+  coerce: { date: true },
+})
+
+export const insertAdminSchema = createCoercedInsertSchema(admins).pick({
+  username: true,
+  password: true,
+  name: true,
+})
+
+export const insertLawyerSchema = createCoercedInsertSchema(lawyers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const updateLawyerSchema = createCoercedInsertSchema(lawyers)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .partial()
+
+// TypeScript types
+export type Admin = typeof admins.$inferSelect
+export type Lawyer = typeof lawyers.$inferSelect
+export type InsertLawyer = z.infer<typeof insertLawyerSchema>
+export type UpdateLawyer = z.infer<typeof updateLawyerSchema>
