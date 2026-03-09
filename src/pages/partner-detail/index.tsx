@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
-import Taro, { useLoad, useDidShow, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
+import Taro, { useLoad, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { useState } from 'react'
 import { Phone, Mail, Globe, Award, Share2 } from 'lucide-react-taro'
 import type { FC } from 'react'
@@ -34,15 +34,6 @@ const PartnerDetailPage: FC = () => {
     }
   })
 
-  // 页面显示时更新导航栏标题
-  useDidShow(() => {
-    if (lawyer) {
-      Taro.setNavigationBarTitle({
-        title: lawyer.name
-      })
-    }
-  })
-
   // 配置分享功能
   useShareAppMessage(() => {
     return {
@@ -74,6 +65,11 @@ const PartnerDetailPage: FC = () => {
       if (res.data?.code === 200 && res.data.data) {
         const lawyerData = res.data.data
         setLawyer(lawyerData)
+
+        // 立即设置导航栏标题为合伙人姓名
+        Taro.setNavigationBarTitle({
+          title: lawyerData.name
+        })
       } else {
         Taro.showToast({
           title: '未找到律师信息',
