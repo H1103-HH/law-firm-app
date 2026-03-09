@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
-import Taro, { useLoad, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
+import Taro, { useLoad, useDidShow, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { useState } from 'react'
 import { Phone, Mail, Globe, Award, Share2 } from 'lucide-react-taro'
 import type { FC } from 'react'
@@ -34,6 +34,15 @@ const PartnerDetailPage: FC = () => {
     }
   })
 
+  // 页面显示时更新导航栏标题
+  useDidShow(() => {
+    if (lawyer) {
+      Taro.setNavigationBarTitle({
+        title: lawyer.name
+      })
+    }
+  })
+
   // 配置分享功能
   useShareAppMessage(() => {
     return {
@@ -65,11 +74,6 @@ const PartnerDetailPage: FC = () => {
       if (res.data?.code === 200 && res.data.data) {
         const lawyerData = res.data.data
         setLawyer(lawyerData)
-
-        // 动态设置导航栏标题为合伙人姓名
-        Taro.setNavigationBarTitle({
-          title: lawyerData.name
-        })
       } else {
         Taro.showToast({
           title: '未找到律师信息',
@@ -102,7 +106,7 @@ const PartnerDetailPage: FC = () => {
     // 提示用户使用右上角菜单分享
     Taro.showModal({
       title: '分享提示',
-      content: '请点击右上角菜单，选择"转发"或"分享到朋友圈"',
+      content: '请点击右上角"···"菜单，选择"转发"分享给好友，或"分享到朋友圈"',
       showCancel: false,
       confirmText: '我知道了'
     })
@@ -279,7 +283,17 @@ const PartnerDetailPage: FC = () => {
             </View>
           </View>
 
-          {/* 荣誉成就 - 移到联系方式后面 */}
+          {/* 典型案例 */}
+          {lawyer.cases && (
+            <View className="bg-white rounded-2xl p-5 shadow-sm">
+              <Text className="block text-base font-bold text-gray-900 mb-3">典型案例</Text>
+              <Text className="block text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                {lawyer.cases}
+              </Text>
+            </View>
+          )}
+
+          {/* 荣誉成就 - 移到最下方 */}
           {lawyer.achievements && (
             <View className="bg-white rounded-2xl p-5 shadow-sm">
               <View className="flex items-center gap-2 mb-3">
@@ -288,16 +302,6 @@ const PartnerDetailPage: FC = () => {
               </View>
               <Text className="block text-sm text-gray-700 leading-relaxed whitespace-pre-line">
                 {lawyer.achievements}
-              </Text>
-            </View>
-          )}
-
-          {/* 典型案例 */}
-          {lawyer.cases && (
-            <View className="bg-white rounded-2xl p-5 shadow-sm">
-              <Text className="block text-base font-bold text-gray-900 mb-3">典型案例</Text>
-              <Text className="block text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                {lawyer.cases}
               </Text>
             </View>
           )}
