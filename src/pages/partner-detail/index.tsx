@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
 import Taro, { useLoad, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Phone, Mail, Globe, Award, Share2 } from 'lucide-react-taro'
 import type { FC } from 'react'
 import { Network } from '@/network'
@@ -52,6 +52,16 @@ const PartnerDetailPage: FC = () => {
     }
   })
 
+  // 监听 lawyer 状态变化，更新导航栏标题
+  useEffect(() => {
+    if (lawyer?.name) {
+      console.log('设置导航栏标题:', lawyer.name)
+      Taro.setNavigationBarTitle({
+        title: lawyer.name
+      })
+    }
+  }, [lawyer])
+
   const loadLawyer = async (id: number) => {
     setLoading(true)
     try {
@@ -65,11 +75,6 @@ const PartnerDetailPage: FC = () => {
       if (res.data?.code === 200 && res.data.data) {
         const lawyerData = res.data.data
         setLawyer(lawyerData)
-
-        // 立即设置导航栏标题为合伙人姓名
-        Taro.setNavigationBarTitle({
-          title: lawyerData.name
-        })
       } else {
         Taro.showToast({
           title: '未找到律师信息',
