@@ -237,6 +237,16 @@ const LoginPage: FC = () => {
               登录即表示您同意《用户协议》和《隐私政策》
             </Text>
           </View>
+
+          {/* 管理员入口（不显眼，放在底部角落） */}
+          <View className="mt-4 text-right">
+            <Text
+              className="text-xs text-gray-300"
+              onClick={() => Taro.navigateTo({ url: '/pages/admin/login' })}
+            >
+              管理员入口
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>

@@ -390,16 +390,6 @@ const ProfilePage: FC = () => {
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </View>
           </View>
-
-          {/* 管理员入口（不显眼，放在底部角落） */}
-          <View className="mt-4 text-right">
-            <Text
-              className="text-xs text-gray-300"
-              onClick={() => Taro.navigateTo({ url: '/pages/admin/login' })}
-            >
-              管理员入口
-            </Text>
-          </View>
         </View>
 
         {/* 底部留白 */}
