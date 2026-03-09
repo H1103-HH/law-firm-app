@@ -1,7 +1,7 @@
-import { View, Text, Input, Textarea, Button, ScrollView } from '@tarojs/components'
+import { View, Text, Input, Textarea, Button, ScrollView, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
-import { Save, ArrowLeft, Plus, Trash2 } from 'lucide-react-taro'
+import { Save, ArrowLeft, Upload } from 'lucide-react-taro'
 import { Network } from '@/network'
 import type { FC } from 'react'
 import './index.css'
@@ -11,41 +11,34 @@ interface LawyerFormData {
   title: string
   avatar: string
   location: string
-  specialties: string[]
-  experience: string
-  education: string
+  specialties: string
   description: string
-  achievements: string[]
+  achievements: string
   phone: string
   email: string
   website: string
-  cases: string[]
+  cases: string
 }
 
 const LawyerFormPage: FC = () => {
   const [lawyerId, setLawyerId] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
   const [formData, setFormData] = useState<LawyerFormData>({
     name: '',
     title: '',
     avatar: '',
     location: '',
-    specialties: [],
-    experience: '',
-    education: '',
+    specialties: '',
     description: '',
-    achievements: [],
+    achievements: '',
     phone: '',
     email: '',
     website: '',
-    cases: []
+    cases: ''
   })
-
-  const [newSpecialty, setNewSpecialty] = useState('')
-  const [newAchievement, setNewAchievement] = useState('')
-  const [newCase, setNewCase] = useState('')
 
   useEffect(() => {
     const { id } = Taro.getCurrentInstance().router?.params || {}
@@ -70,15 +63,13 @@ const LawyerFormPage: FC = () => {
           title: data.title || '',
           avatar: data.avatar || '',
           location: data.location || '',
-          specialties: data.specialties || [],
-          experience: data.experience || '',
-          education: data.education || '',
+          specialties: data.specialties || '',
           description: data.description || '',
-          achievements: data.achievements || [],
+          achievements: data.achievements || '',
           phone: data.phone || '',
           email: data.email || '',
           website: data.website || '',
-          cases: data.cases || []
+          cases: data.cases || ''
         })
       }
     } catch (error) {
@@ -92,28 +83,56 @@ const LawyerFormPage: FC = () => {
     }
   }
 
+  const handleAvatarUpload = () => {
+    Taro.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: async (res) => {
+        const tempFilePath = res.tempFilePaths[0]
+        setUploadingAvatar(true)
+
+        try {
+          console.log('上传头像:', tempFilePath)
+
+          const uploadRes = await Network.uploadFile({
+            url: '/api/upload',
+            filePath: tempFilePath,
+            name: 'file',
+          })
+
+          console.log('上传响应:', uploadRes)
+
+          const data = JSON.parse(uploadRes.data)
+
+          if (data.code === 200 && data.data.imageUrl) {
+            setFormData({ ...formData, avatar: data.data.imageUrl })
+            Taro.showToast({
+              title: '上传成功',
+              icon: 'success'
+            })
+          } else {
+            throw new Error(data.msg || '上传失败')
+          }
+        } catch (error) {
+          console.error('上传头像错误:', error)
+          Taro.showToast({
+            title: '上传失败',
+            icon: 'none'
+          })
+        } finally {
+          setUploadingAvatar(false)
+        }
+      }
+    })
+  }
+
   const handleSave = async () => {
     // 验证必填字段
     if (!formData.name || !formData.title || !formData.avatar || !formData.location ||
-        !formData.experience || !formData.education || !formData.description) {
+        !formData.description) {
       Taro.showToast({
         title: '请填写所有必填字段',
-        icon: 'none'
-      })
-      return
-    }
-
-    if (formData.specialties.length === 0) {
-      Taro.showToast({
-        title: '请至少添加一个专业领域',
-        icon: 'none'
-      })
-      return
-    }
-
-    if (formData.cases.length === 0) {
-      Taro.showToast({
-        title: '请至少添加一个典型案例',
         icon: 'none'
       })
       return
@@ -157,61 +176,10 @@ const LawyerFormPage: FC = () => {
     }
   }
 
-  const addSpecialty = () => {
-    if (newSpecialty.trim()) {
-      setFormData({
-        ...formData,
-        specialties: [...formData.specialties, newSpecialty.trim()]
-      })
-      setNewSpecialty('')
-    }
-  }
-
-  const removeSpecialty = (index: number) => {
-    setFormData({
-      ...formData,
-      specialties: formData.specialties.filter((_, i) => i !== index)
-    })
-  }
-
-  const addAchievement = () => {
-    if (newAchievement.trim()) {
-      setFormData({
-        ...formData,
-        achievements: [...formData.achievements, newAchievement.trim()]
-      })
-      setNewAchievement('')
-    }
-  }
-
-  const removeAchievement = (index: number) => {
-    setFormData({
-      ...formData,
-      achievements: formData.achievements.filter((_, i) => i !== index)
-    })
-  }
-
-  const addCase = () => {
-    if (newCase.trim()) {
-      setFormData({
-        ...formData,
-        cases: [...formData.cases, newCase.trim()]
-      })
-      setNewCase('')
-    }
-  }
-
-  const removeCase = (index: number) => {
-    setFormData({
-      ...formData,
-      cases: formData.cases.filter((_, i) => i !== index)
-    })
-  }
-
   if (loading) {
     return (
       <View className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <Text className="text-gray-500">加载中...</Text>
+        <Text className="block text-gray-500">加载中...</Text>
       </View>
     )
   }
@@ -261,15 +229,38 @@ const LawyerFormPage: FC = () => {
             </View>
 
             <View className="mb-4">
-              <Text className="block text-sm text-gray-700 mb-2">头像 URL *</Text>
-              <View className="bg-gray-50 rounded-lg px-4 py-3">
-                <Input
-                  className="w-full bg-transparent text-base"
-                  placeholder="请输入头像图片链接"
-                  value={formData.avatar}
-                  onInput={(e) => setFormData({ ...formData, avatar: e.detail.value })}
-                  placeholderClass="text-gray-400"
-                />
+              <Text className="block text-sm text-gray-700 mb-2">头像 *</Text>
+              <View className="bg-gray-50 rounded-2xl p-4">
+                {formData.avatar ? (
+                  <View className="flex items-center gap-4">
+                    <Image
+                      className="w-20 h-20 rounded-full object-cover"
+                      src={formData.avatar}
+                      mode="aspectFill"
+                    />
+                    <Button
+                      className="bg-green-700 text-white rounded-lg px-4 py-2"
+                      onClick={handleAvatarUpload}
+                      disabled={uploadingAvatar}
+                    >
+                      <Upload className="w-4 h-4 text-white" />
+                      <Text className="text-white text-sm ml-1">
+                        {uploadingAvatar ? '上传中...' : '更换头像'}
+                      </Text>
+                    </Button>
+                  </View>
+                ) : (
+                  <Button
+                    className="w-full bg-green-700 text-white rounded-lg py-3 flex items-center justify-center gap-2"
+                    onClick={handleAvatarUpload}
+                    disabled={uploadingAvatar}
+                  >
+                    <Upload className="w-5 h-5 text-white" />
+                    <Text className="text-white font-medium">
+                      {uploadingAvatar ? '上传中...' : '上传头像'}
+                    </Text>
+                  </Button>
+                )}
               </View>
             </View>
 
@@ -281,32 +272,6 @@ const LawyerFormPage: FC = () => {
                   placeholder="如：北京"
                   value={formData.location}
                   onInput={(e) => setFormData({ ...formData, location: e.detail.value })}
-                  placeholderClass="text-gray-400"
-                />
-              </View>
-            </View>
-
-            <View className="mb-4">
-              <Text className="block text-sm text-gray-700 mb-2">从业年限 *</Text>
-              <View className="bg-gray-50 rounded-lg px-4 py-3">
-                <Input
-                  className="w-full bg-transparent text-base"
-                  placeholder="如：20年"
-                  value={formData.experience}
-                  onInput={(e) => setFormData({ ...formData, experience: e.detail.value })}
-                  placeholderClass="text-gray-400"
-                />
-              </View>
-            </View>
-
-            <View className="mb-4">
-              <Text className="block text-sm text-gray-700 mb-2">教育背景 *</Text>
-              <View className="bg-gray-50 rounded-lg px-4 py-3">
-                <Input
-                  className="w-full bg-transparent text-base"
-                  placeholder="如：清华大学法学院博士"
-                  value={formData.education}
-                  onInput={(e) => setFormData({ ...formData, education: e.detail.value })}
                   placeholderClass="text-gray-400"
                 />
               </View>
@@ -332,76 +297,34 @@ const LawyerFormPage: FC = () => {
           {/* 专业领域 */}
           <View className="bg-white rounded-2xl p-4 shadow-sm">
             <Text className="block text-base font-bold text-gray-900 mb-4">专业领域</Text>
-
-            <View className="space-y-2 mb-3">
-              {formData.specialties.map((specialty, index) => (
-                <View
-                  key={index}
-                  className="flex items-center justify-between bg-green-50 rounded-lg px-3 py-2"
-                >
-                  <Text className="text-sm text-green-900">{specialty}</Text>
-                  <Trash2
-                    className="w-4 h-4 text-red-500"
-                    onClick={() => removeSpecialty(index)}
-                  />
-                </View>
-              ))}
-            </View>
-
-            <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-              <View style={{ flex: 1, backgroundColor: '#f5f5f5', borderRadius: '8px', padding: '8px 12px' }}>
-                <Input
-                  className="w-full bg-transparent text-sm"
-                  placeholder="添加专业领域"
-                  value={newSpecialty}
-                  onInput={(e) => setNewSpecialty(e.detail.value)}
-                  placeholderClass="text-gray-400"
-                />
-              </View>
-              <Button
-                className="flex-shrink-0 bg-green-700 text-white rounded-lg px-3"
-                onClick={addSpecialty}
-              >
-                <Plus className="w-4 h-4 text-white" />
-              </Button>
+            <View className="bg-gray-50 rounded-2xl p-4">
+              <Textarea
+                className="w-full bg-transparent text-base"
+                placeholder="请输入专业领域，如：公司法、知识产权、刑事辩护等"
+                value={formData.specialties}
+                onInput={(e) => setFormData({ ...formData, specialties: e.detail.value })}
+                placeholderClass="text-gray-400"
+                maxlength={500}
+                autoHeight
+                style={{ minHeight: '80px' }}
+              />
             </View>
           </View>
 
           {/* 荣誉成就 */}
           <View className="bg-white rounded-2xl p-4 shadow-sm">
             <Text className="block text-base font-bold text-gray-900 mb-4">荣誉成就（可选）</Text>
-
-            <View className="space-y-2 mb-3">
-              {formData.achievements.map((achievement, index) => (
-                <View
-                  key={index}
-                  className="flex items-center justify-between bg-blue-50 rounded-lg px-3 py-2"
-                >
-                  <Text className="text-sm text-blue-900">{achievement}</Text>
-                  <Trash2
-                    className="w-4 h-4 text-red-500"
-                    onClick={() => removeAchievement(index)}
-                  />
-                </View>
-              ))}
-            </View>
-
-            <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-              <View style={{ flex: 1, backgroundColor: '#f5f5f5', borderRadius: '8px', padding: '8px 12px' }}>
-                <Input
-                  className="w-full bg-transparent text-sm"
-                  placeholder="添加荣誉成就"
-                  value={newAchievement}
-                  onInput={(e) => setNewAchievement(e.detail.value)}
-                  placeholderClass="text-gray-400"
-                />
-              </View>
-              <Button
-                className="flex-shrink-0 bg-blue-500 text-white rounded-lg px-3"
-                onClick={addAchievement}
-              >
-                <Plus className="w-4 h-4 text-white" />
-              </Button>
+            <View className="bg-gray-50 rounded-2xl p-4">
+              <Textarea
+                className="w-full bg-transparent text-base"
+                placeholder="请输入荣誉成就"
+                value={formData.achievements}
+                onInput={(e) => setFormData({ ...formData, achievements: e.detail.value })}
+                placeholderClass="text-gray-400"
+                maxlength={1000}
+                autoHeight
+                style={{ minHeight: '80px' }}
+              />
             </View>
           </View>
 
@@ -452,38 +375,17 @@ const LawyerFormPage: FC = () => {
           {/* 典型案例 */}
           <View className="bg-white rounded-2xl p-4 shadow-sm">
             <Text className="block text-base font-bold text-gray-900 mb-4">典型案例 *</Text>
-
-            <View className="space-y-2 mb-3">
-              {formData.cases.map((case_, index) => (
-                <View
-                  key={index}
-                  className="flex items-center justify-between bg-purple-50 rounded-lg px-3 py-2"
-                >
-                  <Text className="text-sm text-purple-900">{case_}</Text>
-                  <Trash2
-                    className="w-4 h-4 text-red-500"
-                    onClick={() => removeCase(index)}
-                  />
-                </View>
-              ))}
-            </View>
-
-            <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-              <View style={{ flex: 1, backgroundColor: '#f5f5f5', borderRadius: '8px', padding: '8px 12px' }}>
-                <Input
-                  className="w-full bg-transparent text-sm"
-                  placeholder="添加典型案例"
-                  value={newCase}
-                  onInput={(e) => setNewCase(e.detail.value)}
-                  placeholderClass="text-gray-400"
-                />
-              </View>
-              <Button
-                className="flex-shrink-0 bg-purple-600 text-white rounded-lg px-3"
-                onClick={addCase}
-              >
-                <Plus className="w-4 h-4 text-white" />
-              </Button>
+            <View className="bg-gray-50 rounded-2xl p-4">
+              <Textarea
+                className="w-full bg-transparent text-base"
+                placeholder="请输入典型案例"
+                value={formData.cases}
+                onInput={(e) => setFormData({ ...formData, cases: e.detail.value })}
+                placeholderClass="text-gray-400"
+                maxlength={1000}
+                autoHeight
+                style={{ minHeight: '80px' }}
+              />
             </View>
           </View>
         </View>

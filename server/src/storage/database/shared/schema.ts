@@ -28,15 +28,13 @@ export const lawyers = pgTable("lawyers", {
   title: varchar("title", { length: 100 }).notNull(),
   avatar: varchar("avatar", { length: 500 }).notNull(),
   location: varchar("location", { length: 100 }).notNull(),
-  specialties: jsonb("specialties").$type<string[]>().notNull(),
-  experience: varchar("experience", { length: 50 }).notNull(),
-  education: varchar("education", { length: 200 }).notNull(),
+  specialties: text("specialties").notNull(), // 改为文本
   description: text("description").notNull(),
-  achievements: jsonb("achievements").$type<string[]>().notNull(),
+  achievements: text("achievements").notNull(), // 改为文本
   phone: varchar("phone", { length: 50 }),
   email: varchar("email", { length: 200 }),
   website: varchar("website", { length: 500 }),
-  cases: jsonb("cases").$type<string[]>().notNull(),
+  cases: text("cases").notNull(), // 改为文本
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),

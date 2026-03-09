@@ -5,9 +5,10 @@ import { ConsultationsModule } from './consultations/consultations.module';
 import { AuthModule } from './auth/auth.module';
 import { LawyerModule } from './lawyer/lawyer.module';
 import { AdminModule } from './admin/admin.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
-  imports: [ConsultationsModule, AuthModule, LawyerModule, AdminModule],
+  imports: [ConsultationsModule, AuthModule, LawyerModule, AdminModule, UploadModule],
   controllers: [AppController],
   providers: [AppService],
 })
