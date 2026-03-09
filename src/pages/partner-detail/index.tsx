@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
-import Taro, { useLoad } from '@tarojs/taro'
+import Taro, { useLoad, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { useState } from 'react'
 import { Phone, Mail, Globe, Award, Share2 } from 'lucide-react-taro'
 import type { FC } from 'react'
@@ -34,6 +34,24 @@ const PartnerDetailPage: FC = () => {
     }
   })
 
+  // 配置分享功能
+  useShareAppMessage(() => {
+    return {
+      title: lawyer ? `${lawyer.name} - 德恒律师事务所` : '德恒律师事务所',
+      path: lawyer ? `/pages/partner-detail/index?id=${lawyer.id}` : '/pages/index/index',
+      imageUrl: lawyer?.avatar || ''
+    }
+  })
+
+  // 配置分享到朋友圈
+  useShareTimeline(() => {
+    return {
+      title: lawyer ? `${lawyer.name} - 德恒律师事务所` : '德恒律师事务所',
+      query: lawyer ? `id=${lawyer.id}` : '',
+      imageUrl: lawyer?.avatar || ''
+    }
+  })
+
   const loadLawyer = async (id: number) => {
     setLoading(true)
     try {
@@ -45,7 +63,13 @@ const PartnerDetailPage: FC = () => {
       console.log('律师详情响应:', res)
 
       if (res.data?.code === 200 && res.data.data) {
-        setLawyer(res.data.data)
+        const lawyerData = res.data.data
+        setLawyer(lawyerData)
+
+        // 动态设置导航栏标题为合伙人姓名
+        Taro.setNavigationBarTitle({
+          title: lawyerData.name
+        })
       } else {
         Taro.showToast({
           title: '未找到律师信息',
@@ -73,9 +97,14 @@ const PartnerDetailPage: FC = () => {
   }
 
   const handleShare = () => {
-    Taro.showShareMenu({
-      withShareTicket: true,
-      showShareItems: ['shareAppMessage', 'shareTimeline']
+    if (!lawyer) return
+
+    // 提示用户使用右上角菜单分享
+    Taro.showModal({
+      title: '分享提示',
+      content: '请点击右上角菜单，选择"转发"或"分享到朋友圈"',
+      showCancel: false,
+      confirmText: '我知道了'
     })
   }
 
@@ -204,30 +233,7 @@ const PartnerDetailPage: FC = () => {
             </Text>
           </View>
 
-          {/* 荣誉成就 */}
-          {lawyer.achievements && (
-            <View className="bg-white rounded-2xl p-5 shadow-sm">
-              <View className="flex items-center gap-2 mb-3">
-                <Award className="w-5 h-5 text-blue-600" />
-                <Text className="text-base font-bold text-gray-900">荣誉成就</Text>
-              </View>
-              <Text className="block text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                {lawyer.achievements}
-              </Text>
-            </View>
-          )}
-
-          {/* 典型案例 */}
-          {lawyer.cases && (
-            <View className="bg-white rounded-2xl p-5 shadow-sm">
-              <Text className="block text-base font-bold text-gray-900 mb-3">典型案例</Text>
-              <Text className="block text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                {lawyer.cases}
-              </Text>
-            </View>
-          )}
-
-          {/* 联系方式 */}
+          {/* 联系方式 - 移到这里，与荣誉成就交换位置 */}
           <View className="bg-white rounded-2xl p-5 shadow-sm">
             <Text className="block text-base font-bold text-gray-900 mb-3">联系方式</Text>
             <View className="space-y-3">
@@ -272,6 +278,29 @@ const PartnerDetailPage: FC = () => {
               )}
             </View>
           </View>
+
+          {/* 荣誉成就 - 移到联系方式后面 */}
+          {lawyer.achievements && (
+            <View className="bg-white rounded-2xl p-5 shadow-sm">
+              <View className="flex items-center gap-2 mb-3">
+                <Award className="w-5 h-5 text-blue-600" />
+                <Text className="text-base font-bold text-gray-900">荣誉成就</Text>
+              </View>
+              <Text className="block text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                {lawyer.achievements}
+              </Text>
+            </View>
+          )}
+
+          {/* 典型案例 */}
+          {lawyer.cases && (
+            <View className="bg-white rounded-2xl p-5 shadow-sm">
+              <Text className="block text-base font-bold text-gray-900 mb-3">典型案例</Text>
+              <Text className="block text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                {lawyer.cases}
+              </Text>
+            </View>
+          )}
 
           {/* 分享按钮 */}
           <Button
