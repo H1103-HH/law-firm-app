@@ -240,7 +240,7 @@ const LoginPage: FC = () => {
 
           {/* 管理员入口（不显眼，放在底部角落） */}
           <View
-            className="mt-4 text-right active:bg-gray-50"
+            className="mt-4 text-right"
             onClick={() => Taro.navigateTo({ url: '/pages/admin/login/index' })}
           >
             <Text className="block text-xs text-gray-300">
