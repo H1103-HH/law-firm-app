@@ -97,7 +97,7 @@ const LoginPage: FC = () => {
               欢迎登录
             </Text>
             <Text className="block text-base text-gray-500">
-              正义律师事务所
+              德恒律师事务所
             </Text>
           </View>
 
