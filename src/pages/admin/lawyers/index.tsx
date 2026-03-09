@@ -39,7 +39,7 @@ const AdminLawyersPage: FC = () => {
     const token = Taro.getStorageSync('adminToken')
     if (!token) {
       Taro.redirectTo({
-        url: '/pages/admin/login'
+        url: '/pages/admin/login/index'
       })
     }
   }
@@ -74,13 +74,13 @@ const AdminLawyersPage: FC = () => {
 
   const handleAdd = () => {
     Taro.navigateTo({
-      url: '/pages/admin/lawyer-form'
+      url: '/pages/admin/lawyer-form/index'
     })
   }
 
   const handleEdit = (id: number) => {
     Taro.navigateTo({
-      url: `/pages/admin/lawyer-form?id=${id}`
+      url: `/pages/admin/lawyer-form/index?id=${id}`
     })
   }
 
@@ -129,7 +129,7 @@ const AdminLawyersPage: FC = () => {
           Taro.removeStorageSync('adminToken')
           Taro.removeStorageSync('adminInfo')
           Taro.redirectTo({
-            url: '/pages/admin/login'
+            url: '/pages/admin/login/index'
           })
         }
       }

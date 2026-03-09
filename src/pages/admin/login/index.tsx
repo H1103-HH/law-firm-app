@@ -44,7 +44,7 @@ const AdminLoginPage: FC = () => {
         // 跳转到律师管理列表页
         setTimeout(() => {
           Taro.redirectTo({
-            url: '/pages/admin/lawyers'
+            url: '/pages/admin/lawyers/index'
           })
         }, 1500)
       } else {
