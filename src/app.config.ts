@@ -15,7 +15,7 @@ export default defineAppConfig({
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#164616',
-    navigationBarTitleText: '律师名片',
+    navigationBarTitleText: '德恒律师事务所',
     navigationBarTextStyle: 'white'
   },
   tabBar: {
