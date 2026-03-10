@@ -6,7 +6,7 @@ import './index.css'
 // 配置信息（需要根据实际情况修改）
 const CONFIG = {
   // 官网地址
-  websiteUrl: 'https://www.example.com', // 替换为实际官网地址
+  websiteUrl: 'https://www.dehenglaw.com',
   // 公众号小程序配置
   officialAccount: {
     appId: '', // 替换为实际公众号小程序 appId
