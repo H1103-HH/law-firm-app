@@ -1,5 +1,6 @@
 import { View, Text, Image } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
+import { useState } from 'react'
 import type { FC } from 'react'
 import './index.css'
 
@@ -7,14 +8,13 @@ import './index.css'
 const CONFIG = {
   // 官网地址
   websiteUrl: 'https://www.dehenglaw.com',
-  // 公众号小程序配置
-  officialAccount: {
-    appId: '', // 替换为实际公众号小程序 appId
-    path: 'pages/index/index' // 替换为实际公众号页面路径
-  }
+  // 公众号二维码
+  qrCodeUrl: 'https://code.coze.cn/api/sandbox/coze_coding/file/proxy?expire_time=-1&file_path=assets%2F10dd542bd81f5a828855d40d150231c0.jpg&nonce=90aeb68f-4126-4811-9fee-8b6af209fc84&project_id=7613615424479035434&sign=957c3eabf4a747fd1a10bd854d497077f0195717e38698fa758610a05773bf99'
 }
 
 const IndexPage: FC = () => {
+  const [showQrCode, setShowQrCode] = useState(false)
+
   useLoad(() => {
     console.log('首页加载')
   })
@@ -26,30 +26,14 @@ const IndexPage: FC = () => {
     })
   }
 
-  // 跳转公众号
+  // 显示公众号二维码
   const handleGoToOfficialAccount = () => {
-    if (!CONFIG.officialAccount.appId) {
-      Taro.showToast({
-        title: '公众号配置未设置',
-        icon: 'none'
-      })
-      return
-    }
+    setShowQrCode(true)
+  }
 
-    Taro.navigateToMiniProgram({
-      appId: CONFIG.officialAccount.appId,
-      path: CONFIG.officialAccount.path,
-      success: () => {
-        console.log('跳转公众号成功')
-      },
-      fail: (err) => {
-        console.error('跳转公众号失败', err)
-        Taro.showToast({
-          title: '跳转失败，请稍后重试',
-          icon: 'none'
-        })
-      }
-    })
+  // 关闭二维码弹窗
+  const handleCloseQrCode = () => {
+    setShowQrCode(false)
   }
 
   return (
@@ -83,6 +67,42 @@ const IndexPage: FC = () => {
           </Text>
         </View>
       </View>
+
+      {/* 公众号二维码弹窗 */}
+      {showQrCode && (
+        <View className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <View className="bg-white rounded-2xl p-6 mx-6 max-w-sm w-full">
+            {/* 标题 */}
+            <Text className="block text-lg font-bold text-gray-900 text-center mb-4">
+              关注德恒公众号
+            </Text>
+
+            {/* 二维码图片 */}
+            <View className="flex justify-center mb-4">
+              <Image
+                src={CONFIG.qrCodeUrl}
+                mode="widthFix"
+                className="w-64 h-64"
+              />
+            </View>
+
+            {/* 提示文字 */}
+            <Text className="block text-sm text-gray-600 text-center mb-4">
+              长按识别二维码关注
+            </Text>
+
+            {/* 关闭按钮 */}
+            <View
+              className="bg-gray-100 rounded-xl py-3 active:bg-gray-200"
+              onClick={handleCloseQrCode}
+            >
+              <Text className="block text-base font-medium text-gray-900 text-center">
+                关闭
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   )
 }
