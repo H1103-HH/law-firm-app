@@ -33,6 +33,8 @@ const PartnersPage: FC = () => {
   }, [])
 
   const loadLawyers = async () => {
+    setLoading(true)
+
     try {
       const res = await Network.request({
         url: '/api/lawyers',
@@ -83,23 +85,18 @@ const PartnersPage: FC = () => {
   const filteredLawyers = lawyers.filter((lawyer) => {
     if (!searchKeyword) return true
 
-    try {
-      const keyword = searchKeyword.toLowerCase().trim()
-      const specialties = parseSpecialties(lawyer.specialties)
+    const keyword = searchKeyword.toLowerCase().trim()
+    const specialties = parseSpecialties(lawyer.specialties)
 
-      // 支持搜索：姓名、职务、专业领域、地点
-      return (
-        lawyer.name.toLowerCase().includes(keyword) ||
-        lawyer.title.toLowerCase().includes(keyword) ||
-        specialties.some((specialty) =>
-          specialty.toLowerCase().includes(keyword)
-        ) ||
-        lawyer.location.toLowerCase().includes(keyword)
-      )
-    } catch (error) {
-      console.error('搜索过滤错误:', error)
-      return false
-    }
+    // 支持搜索：姓名、职务、专业领域、地点
+    return (
+      lawyer.name.toLowerCase().includes(keyword) ||
+      lawyer.title.toLowerCase().includes(keyword) ||
+      specialties.some((specialty) =>
+        specialty.toLowerCase().includes(keyword)
+      ) ||
+      lawyer.location.toLowerCase().includes(keyword)
+    )
   })
 
   // 搜索输入处理
@@ -117,6 +114,12 @@ const PartnersPage: FC = () => {
     Taro.navigateTo({
       url: `/pages/partner-detail/index?id=${lawyerId}`
     })
+  }
+
+  // 图片加载错误处理
+  const handleImageError = (lawyerId: number) => {
+    console.error(`图片加载失败: lawyerId=${lawyerId}`)
+    setFailedImages(prev => new Set(prev).add(lawyerId))
   }
 
   if (loading) {
@@ -157,36 +160,30 @@ const PartnersPage: FC = () => {
           {filteredLawyers.length > 0 ? (
             <View className="space-y-4">
               {filteredLawyers.map((lawyer) => {
-                try {
-                  const specialties = parseSpecialties(lawyer.specialties)
-                  console.log(`律师 ${lawyer.name} 的 specialties:`, lawyer.specialties, '解析后:', specialties)
+                const specialties = parseSpecialties(lawyer.specialties)
+                console.log(`律师 ${lawyer.name} 的 specialties:`, lawyer.specialties, '解析后:', specialties)
 
-                  const handleImageError = () => {
-                    console.error(`图片加载失败: ${lawyer.avatar}`)
-                    setFailedImages(prev => new Set(prev).add(lawyer.id))
-                  }
-
-                  return (
-                    <View
-                      key={lawyer.id}
-                      className="bg-white rounded-2xl p-5 shadow-sm active:bg-gray-50"
-                      onClick={() => handleLawyerClick(lawyer.id)}
-                    >
-                      <View className="flex items-start gap-4">
-                        {/* 头像 */}
-                        {failedImages.has(lawyer.id) ? (
-                          // 图片加载失败时显示默认图标
-                          <View className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-100 flex-shrink-0">
-                            <User className="w-8 h-8 text-green-600" />
-                          </View>
-                        ) : (
-                          <Image
-                            className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
-                            src={lawyer.avatar || ''}
-                            mode="aspectFill"
-                            onError={handleImageError}
-                          />
-                        )}
+                return (
+                  <View
+                    key={lawyer.id}
+                    className="bg-white rounded-2xl p-5 shadow-sm active:bg-gray-50"
+                    onClick={() => handleLawyerClick(lawyer.id)}
+                  >
+                    <View className="flex items-start gap-4">
+                      {/* 头像 */}
+                      {failedImages.has(lawyer.id) ? (
+                        // 图片加载失败时显示默认图标
+                        <View className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-100 flex-shrink-0">
+                          <User className="w-8 h-8 text-green-600" />
+                        </View>
+                      ) : (
+                        <Image
+                          className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
+                          src={lawyer.avatar || ''}
+                          mode="aspectFill"
+                          onError={() => handleImageError(lawyer.id)}
+                        />
+                      )}
 
                         {/* 信息 */}
                         <View className="flex-1">
@@ -223,10 +220,6 @@ const PartnersPage: FC = () => {
                       </View>
                     </View>
                   )
-                } catch (error) {
-                  console.error('渲染律师卡片时出错:', lawyer, error)
-                  return null
-                }
               })}
             </View>
           ) : (
