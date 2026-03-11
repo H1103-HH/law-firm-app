@@ -101,7 +101,7 @@ export const partners: Partner[] = [
     title: '合伙人',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
     location: '伦敦',
-    specialties: ['欧盟法', '国际仲裁', '合规咨询'],
+    specialties: ['欧盟法', '国际仲裁', '合规'],
     experience: '20年',
     education: '牛津大学法学硕士',
     description: '专注于欧盟法、国际仲裁等领域，在国际仲裁界享有盛誉。',
