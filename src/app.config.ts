@@ -4,6 +4,8 @@ export default defineAppConfig({
     'pages/partners/index',
     'pages/profile/index',
     'pages/partner-detail/index',
+    'pages/consultation-detail/index',
+    'pages/new-consultation/index',
     'pages/webview/index',
     'pages/login/index',
     'pages/saved-cards/index',
