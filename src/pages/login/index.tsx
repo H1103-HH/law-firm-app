@@ -35,6 +35,29 @@ const LoginPage: FC = () => {
     try {
       setLoading(true)
 
+      // 获取微信用户信息（昵称、头像）
+      let userInfo = { nickname: undefined as string | undefined, avatar: undefined as string | undefined }
+
+      // 仅在小程序中获取用户信息
+      if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
+        try {
+          const profileRes = await Taro.getUserProfile({
+            desc: '用于完善用户资料'
+          })
+          console.log('用户信息:', profileRes.userInfo)
+
+          userInfo.nickname = profileRes.userInfo.nickName
+          userInfo.avatar = profileRes.userInfo.avatarUrl
+        } catch (profileError: any) {
+          console.error('获取用户信息失败:', profileError)
+          // 用户拒绝授权，使用默认信息
+          Taro.showToast({
+            title: '授权失败，使用默认信息',
+            icon: 'none'
+          })
+        }
+      }
+
       // 获取微信登录码
       const loginRes = await Taro.login()
       console.log('微信登录码:', loginRes.code)
@@ -49,18 +72,20 @@ const LoginPage: FC = () => {
         method: 'POST',
         data: {
           code: loginRes.code,
-          role: selectedRole
+          role: selectedRole,
+          nickname: userInfo.nickname,
+          avatar: userInfo.avatar
         }
       })
 
       console.log('登录响应:', res.data)
 
       if (res.data.code === 200) {
-        const userInfo = res.data.data
+        const user = res.data.data
 
         // 存储用户信息
-        Taro.setStorageSync('userInfo', userInfo)
-        Taro.setStorageSync('token', userInfo.token)
+        Taro.setStorageSync('userInfo', user)
+        Taro.setStorageSync('token', user.token)
 
         Taro.showToast({
           title: '登录成功',

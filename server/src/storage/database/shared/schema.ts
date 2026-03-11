@@ -9,6 +9,21 @@ export const healthCheck = pgTable("health_check", {
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 });
 
+// 用户表
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  openid: varchar("openid", { length: 255 }).notNull().unique(),
+  unionid: varchar("unionid", { length: 255 }),
+  nickname: varchar("nickname", { length: 100 }),
+  avatar: varchar("avatar", { length: 500 }),
+  role: varchar("role", { length: 20 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+}, (table) => [
+  index("users_openid_idx").on(table.openid),
+  index("users_role_idx").on(table.role),
+]);
+
 // 管理员表
 export const admins = pgTable("admins", {
   id: serial("id").primaryKey(),
@@ -49,6 +64,14 @@ const { createInsertSchema: createCoercedInsertSchema } = createSchemaFactory({
   coerce: { date: true },
 })
 
+export const insertUserSchema = createCoercedInsertSchema(users).pick({
+  openid: true,
+  unionid: true,
+  nickname: true,
+  avatar: true,
+  role: true,
+})
+
 export const insertAdminSchema = createCoercedInsertSchema(admins).pick({
   username: true,
   password: true,
@@ -70,6 +93,8 @@ export const updateLawyerSchema = createCoercedInsertSchema(lawyers)
   .partial()
 
 // TypeScript types
+export type User = typeof users.$inferSelect
+export type InsertUser = z.infer<typeof insertUserSchema>
 export type Admin = typeof admins.$inferSelect
 export type Lawyer = typeof lawyers.$inferSelect
 export type InsertLawyer = z.infer<typeof insertLawyerSchema>
