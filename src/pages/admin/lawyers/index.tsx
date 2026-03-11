@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { useState, useEffect } from 'react'
 import { Plus, Pencil, Trash2, LogOut, ArrowRight } from 'lucide-react-taro'
 import { Network } from '@/network'
@@ -34,6 +34,12 @@ const AdminLawyersPage: FC = () => {
     checkLogin()
     loadLawyers()
   }, [])
+
+  // 监听页面显示，刷新列表
+  useDidShow(() => {
+    checkLogin()
+    loadLawyers()
+  })
 
   const checkLogin = () => {
     const token = Taro.getStorageSync('adminToken')

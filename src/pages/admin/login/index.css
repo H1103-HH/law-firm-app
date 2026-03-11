@@ -1,1 +1,33 @@
 /* 管理员登录页面样式 */
+
+/* 导航栏 */
+.navbar {
+  height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.navbar-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.navbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}

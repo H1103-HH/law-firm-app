@@ -1,7 +1,7 @@
 import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState } from 'react'
-import { Shield, LogIn } from 'lucide-react-taro'
+import { Shield, LogIn, ArrowLeft } from 'lucide-react-taro'
 import { Network } from '@/network'
 import type { FC } from 'react'
 import './index.css'
@@ -65,19 +65,34 @@ const AdminLoginPage: FC = () => {
   }
 
   return (
-    <View className="min-h-screen bg-gradient-to-b from-green-900 to-green-950 p-6 flex flex-col">
-      {/* 头部 */}
-      <View className="flex-1 flex flex-col justify-center items-center">
-        <View className="bg-white/10 rounded-full p-6 mb-6">
-          <Shield className="w-20 h-20 text-white" />
-        </View>
+    <View className="min-h-screen bg-gradient-to-b from-green-900 to-green-950">
+      {/* 导航栏 */}
+      <View className="navbar">
+        <Button
+          className="navbar-btn"
+          onClick={() => Taro.navigateBack()}
+        >
+          <ArrowLeft size={20} color="#fff" />
+        </Button>
+        <Text className="navbar-title">管理员登录</Text>
+        <View className="navbar-btn" />
+      </View>
 
-        <Text className="block text-3xl font-bold text-white mb-2 text-center">
-          管理员登录
-        </Text>
-        <Text className="block text-green-200 mb-8 text-center">
-          律师信息管理系统
-        </Text>
+      {/* 内容区域 */}
+      <View className="p-6 flex flex-col">
+        {/* 头部 */}
+        <View className="flex-1 flex flex-col justify-center items-center mt-8">
+          <View className="bg-white/10 rounded-full p-6 mb-6">
+            <Shield className="w-20 h-20 text-white" />
+          </View>
+
+          <Text className="block text-3xl font-bold text-white mb-2 text-center">
+            管理员登录
+          </Text>
+          <Text className="block text-green-200 mb-8 text-center">
+            律师信息管理系统
+          </Text>
+        </View>
 
         {/* 登录表单 */}
         <View className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-lg">
