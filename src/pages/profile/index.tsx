@@ -165,9 +165,9 @@ const ProfilePage: FC = () => {
         <View className="bg-gradient-to-br from-green-900 to-green-800 rounded-b-3xl pt-8 pb-6 px-6 mb-4">
           <View className="flex items-start gap-4">
             <Image
-              className="w-20 h-20 rounded-full object-cover border-4 border-white/20 flex-shrink-0"
+              className="w-20 h-20 rounded-full object-contain border-4 border-white/20 flex-shrink-0 bg-green-700"
               src={userInfo.avatar || ''}
-              mode="aspectFill"
+              mode="aspectFit"
             />
             <View className="flex-1 pt-1">
               <Text className="block text-xl font-bold text-white mb-1">
@@ -233,9 +233,9 @@ const ProfilePage: FC = () => {
                       <View className="flex items-start gap-3">
                         {/* 头像 */}
                         <Image
-                          className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                          className="w-12 h-12 rounded-full object-contain flex-shrink-0 bg-green-100"
                           src={lawyer.avatar}
-                          mode="aspectFill"
+                          mode="aspectFit"
                         />
 
                         {/* 信息 */}

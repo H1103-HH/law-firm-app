@@ -185,9 +185,9 @@ const PartnerDetailPage: FC = () => {
             {/* 头像 */}
             <View className="relative mb-4">
               <Image
-                className="w-24 h-24 rounded-full border-4 border-white object-cover"
+                className="w-24 h-24 rounded-full border-4 border-white object-contain bg-green-700"
                 src={lawyer.avatar}
-                mode="aspectFill"
+                mode="aspectFit"
               />
             </View>
 

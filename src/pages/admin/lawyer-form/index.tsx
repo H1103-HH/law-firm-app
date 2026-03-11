@@ -234,9 +234,9 @@ const LawyerFormPage: FC = () => {
                 {formData.avatar ? (
                   <View className="flex items-center gap-4">
                     <Image
-                      className="w-20 h-20 rounded-full object-cover"
+                      className="w-20 h-20 rounded-full object-contain bg-green-50"
                       src={formData.avatar}
-                      mode="aspectFill"
+                      mode="aspectFit"
                     />
                     <Button
                       className="bg-green-700 text-white rounded-lg px-4 py-2"
