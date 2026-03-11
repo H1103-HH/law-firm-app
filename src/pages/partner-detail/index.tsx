@@ -39,7 +39,7 @@ const PartnerDetailPage: FC = () => {
   // 配置分享功能
   useShareAppMessage(() => {
     return {
-      title: lawyer ? `${lawyer.name} - 德恒律师事务所` : '德恒律师事务所',
+      title: lawyer ? `${lawyer.name} - ${lawyer.title}\n📍 ${lawyer.location}\n${lawyer.phone ? '📞 ' + lawyer.phone : ''}` : '德恒律师事务所',
       path: lawyer ? `/pages/partner-detail/index?id=${lawyer.id}` : '/pages/index/index',
       imageUrl: lawyer?.avatar || ''
     }
@@ -48,7 +48,7 @@ const PartnerDetailPage: FC = () => {
   // 配置分享到朋友圈
   useShareTimeline(() => {
     return {
-      title: lawyer ? `${lawyer.name} - 德恒律师事务所` : '德恒律师事务所',
+      title: lawyer ? `${lawyer.name} - ${lawyer.title} - 德恒律师事务所` : '德恒律师事务所',
       query: lawyer ? `id=${lawyer.id}` : '',
       imageUrl: lawyer?.avatar || ''
     }
@@ -201,25 +201,17 @@ const PartnerDetailPage: FC = () => {
   const handleShare = async () => {
     if (!lawyer) return
 
+    // 显示分享按钮
+    Taro.showShareMenu({
+      withShareTicket: true
+    })
+
     // 提示用户使用右上角菜单分享
     Taro.showModal({
       title: '分享名片',
-      content: `${lawyer.name}\n${lawyer.title}\n\n📍 ${lawyer.location}\n${lawyer.phone ? '📞 ' + lawyer.phone : ''}\n${lawyer.email ? '📧 ' + lawyer.email : ''}`,
+      content: '请点击右上角"···"菜单，选择"转发"分享给好友，或"分享到朋友圈"',
       showCancel: false,
-      confirmText: '复制信息',
-      success: () => {
-        const cardInfo = `${lawyer.name} - ${lawyer.title}\n📍 ${lawyer.location}\n${lawyer.phone ? '📞 ' + lawyer.phone : ''}\n${lawyer.email ? '📧 ' + lawyer.email : ''}`
-        
-        Taro.setClipboardData({
-          data: cardInfo,
-          success: () => {
-            Taro.showToast({
-              title: '名片信息已复制',
-              icon: 'success'
-            })
-          }
-        })
-      }
+      confirmText: '我知道了'
     })
   }
 
