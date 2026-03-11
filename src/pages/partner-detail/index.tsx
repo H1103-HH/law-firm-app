@@ -184,11 +184,11 @@ const PartnerDetailPage: FC = () => {
           <View className="flex flex-col items-center">
             {/* 头像 */}
             <View className="relative mb-4">
-              <View className="w-24 h-24 rounded-full border-4 border-white bg-green-700 flex items-center justify-center overflow-hidden">
+              <View className="w-24 h-24 rounded-full border-4 border-white bg-green-700 overflow-hidden flex items-center justify-center">
                 <Image
-                  className="w-24 h-24"
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   src={lawyer.avatar}
-                  mode="aspectFit"
+                  mode="scaleToFill"
                 />
               </View>
             </View>

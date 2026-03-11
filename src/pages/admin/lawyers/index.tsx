@@ -185,11 +185,11 @@ const AdminLawyersPage: FC = () => {
                   className="bg-white rounded-2xl p-5 shadow-sm"
                 >
                   <View className="flex items-start gap-4 mb-4">
-                    <View className="w-16 h-16 rounded-full border-2 border-green-100 bg-green-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <View className="w-16 h-16 rounded-full border-2 border-green-100 bg-green-50 flex-shrink-0 overflow-hidden flex items-center justify-center">
                       <Image
-                        className="w-16 h-16"
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                         src={lawyer.avatar}
-                        mode="aspectFit"
+                        mode="scaleToFill"
                       />
                     </View>
                     <View className="flex-1">
