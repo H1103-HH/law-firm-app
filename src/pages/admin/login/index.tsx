@@ -1,7 +1,7 @@
 import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState } from 'react'
-import { LogIn } from 'lucide-react-taro'
+import { ArrowLeft, LogIn } from 'lucide-react-taro'
 import { Network } from '@/network'
 import type { FC } from 'react'
 import './index.css'
@@ -65,7 +65,26 @@ const AdminLoginPage: FC = () => {
   }
 
   return (
-    <View className="min-h-screen bg-gradient-to-b from-green-900 to-green-950 p-6 flex flex-col">
+    <View className="min-h-screen bg-gradient-to-b from-green-900 to-green-950 p-6 flex flex-col relative">
+      {/* 返回按钮 */}
+      <View className="absolute top-6 left-6 z-10">
+        <Button
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: '50%',
+            padding: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1px solid rgba(255, 255, 255, 0.3)'
+          }}
+          onClick={() => Taro.navigateBack()}
+        >
+          <ArrowLeft size={24} color="#fff" />
+        </Button>
+      </View>
+
       {/* 头部 */}
       <View className="flex-1 flex flex-col justify-center items-center">
         <Text className="block text-3xl font-bold text-white mb-2 text-center">
