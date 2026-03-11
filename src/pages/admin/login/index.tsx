@@ -1,7 +1,7 @@
 import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState } from 'react'
-import { Shield, LogIn } from 'lucide-react-taro'
+import { LogIn } from 'lucide-react-taro'
 import { Network } from '@/network'
 import type { FC } from 'react'
 import './index.css'
@@ -68,10 +68,6 @@ const AdminLoginPage: FC = () => {
     <View className="min-h-screen bg-gradient-to-b from-green-900 to-green-950 p-6 flex flex-col">
       {/* 头部 */}
       <View className="flex-1 flex flex-col justify-center items-center">
-        <View className="bg-white/10 rounded-full p-6 mb-6">
-          <Shield className="w-20 h-20 text-white" />
-        </View>
-
         <Text className="block text-3xl font-bold text-white mb-2 text-center">
           管理员登录
         </Text>
