@@ -179,7 +179,7 @@ const PartnersPage: FC = () => {
                       ) : (
                         <View className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center border-2 border-green-100 flex-shrink-0 overflow-hidden">
                           <Image
-                            className="w-full h-full object-contain"
+                            className="w-16 h-16"
                             src={lawyer.avatar || ''}
                             mode="aspectFit"
                             onError={() => handleImageError(lawyer.id)}

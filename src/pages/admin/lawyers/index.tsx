@@ -187,7 +187,7 @@ const AdminLawyersPage: FC = () => {
                   <View className="flex items-start gap-4 mb-4">
                     <View className="w-16 h-16 rounded-full border-2 border-green-100 bg-green-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
                       <Image
-                        className="w-full h-full object-contain"
+                        className="w-16 h-16"
                         src={lawyer.avatar}
                         mode="aspectFit"
                       />
