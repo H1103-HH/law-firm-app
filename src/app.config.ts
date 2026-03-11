@@ -10,7 +10,8 @@ export default defineAppConfig({
     'pages/login/index',
     'pages/admin/login/index',
     'pages/admin/lawyers/index',
-    'pages/admin/lawyer-form/index'
+    'pages/admin/lawyer-form/index',
+    'pages/admin/image-cropper/index'
   ],
   window: {
     backgroundTextStyle: 'light',

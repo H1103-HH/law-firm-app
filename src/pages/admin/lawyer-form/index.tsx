@@ -1,5 +1,5 @@
 import { View, Text, Input, Textarea, Button, ScrollView, Image } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { useState, useEffect } from 'react'
 import { Save, ArrowLeft, Upload } from 'lucide-react-taro'
 import { Network } from '@/network'
@@ -48,6 +48,15 @@ const LawyerFormPage: FC = () => {
     }
   }, [])
 
+  // 监听页面显示，处理裁剪后的图片
+  useDidShow(() => {
+    const croppedImage = Taro.getStorageSync('croppedImage')
+    if (croppedImage) {
+      Taro.removeStorageSync('croppedImage')
+      uploadCroppedImage(croppedImage)
+    }
+  })
+
   const loadLawyer = async (id: number) => {
     setLoading(true)
     try {
@@ -86,45 +95,55 @@ const LawyerFormPage: FC = () => {
   const handleAvatarUpload = () => {
     Taro.chooseImage({
       count: 1,
-      sizeType: ['compressed'],
+      sizeType: ['original'],
       sourceType: ['album', 'camera'],
-      success: async (res) => {
+      success: (res) => {
         const tempFilePath = res.tempFilePaths[0]
-        setUploadingAvatar(true)
 
-        try {
-          console.log('上传头像:', tempFilePath)
+        console.log('选择图片:', tempFilePath)
 
-          const uploadRes = await Network.uploadFile({
-            url: '/api/upload',
-            filePath: tempFilePath,
-            name: 'file',
-          })
-
-          console.log('上传响应:', uploadRes)
-
-          const data = JSON.parse(uploadRes.data)
-
-          if (data.code === 200 && data.data.imageUrl) {
-            setFormData({ ...formData, avatar: data.data.imageUrl })
-            Taro.showToast({
-              title: '上传成功',
-              icon: 'success'
-            })
-          } else {
-            throw new Error(data.msg || '上传失败')
-          }
-        } catch (error) {
-          console.error('上传头像错误:', error)
-          Taro.showToast({
-            title: '上传失败',
-            icon: 'none'
-          })
-        } finally {
-          setUploadingAvatar(false)
-        }
+        // 跳转到裁剪页面
+        Taro.navigateTo({
+          url: `/pages/admin/image-cropper/index?url=${encodeURIComponent(tempFilePath)}`
+        })
       }
     })
+  }
+
+  const uploadCroppedImage = async (imagePath: string) => {
+    setUploadingAvatar(true)
+
+    try {
+      console.log('上传裁剪后的图片:', imagePath)
+
+      const uploadRes = await Network.uploadFile({
+        url: '/api/upload',
+        filePath: imagePath,
+        name: 'file',
+      })
+
+      console.log('上传响应:', uploadRes)
+
+      const data = JSON.parse(uploadRes.data)
+
+      if (data.code === 200 && data.data.imageUrl) {
+        setFormData({ ...formData, avatar: data.data.imageUrl })
+        Taro.showToast({
+          title: '上传成功',
+          icon: 'success'
+        })
+      } else {
+        throw new Error(data.msg || '上传失败')
+      }
+    } catch (error) {
+      console.error('上传头像错误:', error)
+      Taro.showToast({
+        title: '上传失败',
+        icon: 'none'
+      })
+    } finally {
+      setUploadingAvatar(false)
+    }
   }
 
   const handleSave = async () => {

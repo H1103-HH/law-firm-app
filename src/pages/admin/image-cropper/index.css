@@ -1,0 +1,239 @@
+.image-cropper-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 导航栏 */
+.navbar {
+  height: 44px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.navbar-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-btn.disabled {
+  opacity: 0.5;
+}
+
+.navbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 裁剪容器 */
+.cropper-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px 20px;
+  overflow: hidden;
+}
+
+.cropper-area {
+  width: 300px;
+  height: 300px;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cropper-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 300px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cropper-image {
+  max-width: 100%;
+  max-height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.cropper-image.rotated {
+  transition: transform 0.3s ease;
+}
+
+/* 裁剪框 */
+.crop-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.crop-border {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #1890ff;
+  border-radius: 50%;
+}
+
+.crop-border.top-left {
+  top: -10px;
+  left: -10px;
+  border-right: none;
+  border-bottom: none;
+  background: #1890ff;
+}
+
+.crop-border.top-right {
+  top: -10px;
+  right: -10px;
+  border-left: none;
+  border-bottom: none;
+  background: #1890ff;
+}
+
+.crop-border.bottom-left {
+  bottom: -10px;
+  left: -10px;
+  border-right: none;
+  border-top: none;
+  background: #1890ff;
+}
+
+.crop-border.bottom-right {
+  bottom: -10px;
+  right: -10px;
+  border-left: none;
+  border-top: none;
+  background: #1890ff;
+}
+
+/* 九宫格 */
+.crop-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.grid-line {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.grid-line.horizontal-1 {
+  top: 33.33%;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.grid-line.horizontal-2 {
+  top: 66.66%;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.grid-line.vertical-1 {
+  left: 33.33%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.grid-line.vertical-2 {
+  left: 66.66%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+/* 提示文字 */
+.cropper-hint {
+  margin-top: 16px;
+  padding: 0 20px;
+}
+
+.hint-text {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* 控制区域 */
+.cropper-controls {
+  background: #fff;
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.control-row:last-child {
+  margin-bottom: 0;
+}
+
+.control-label {
+  font-size: 14px;
+  color: #333;
+  min-width: 40px;
+}
+
+.control-btn {
+  flex: 1;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.btn-text {
+  font-size: 12px;
+  color: #333;
+}
+
+.control-slider {
+  flex: 1;
+}
