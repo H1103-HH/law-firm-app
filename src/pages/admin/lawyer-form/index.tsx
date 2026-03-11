@@ -233,11 +233,13 @@ const LawyerFormPage: FC = () => {
               <View className="bg-gray-50 rounded-2xl p-4">
                 {formData.avatar ? (
                   <View className="flex items-center gap-4">
-                    <Image
-                      className="w-20 h-20 rounded-full object-contain bg-green-50"
-                      src={formData.avatar}
-                      mode="aspectFit"
-                    />
+                    <View className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center overflow-hidden">
+                      <Image
+                        className="w-full h-full object-contain"
+                        src={formData.avatar}
+                        mode="aspectFit"
+                      />
+                    </View>
                     <Button
                       className="bg-green-700 text-white rounded-lg px-4 py-2"
                       onClick={handleAvatarUpload}

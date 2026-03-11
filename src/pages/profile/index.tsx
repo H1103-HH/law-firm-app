@@ -164,11 +164,13 @@ const ProfilePage: FC = () => {
         {/* 用户信息卡片 */}
         <View className="bg-gradient-to-br from-green-900 to-green-800 rounded-b-3xl pt-8 pb-6 px-6 mb-4">
           <View className="flex items-start gap-4">
-            <Image
-              className="w-20 h-20 rounded-full object-contain border-4 border-white/20 flex-shrink-0 bg-green-700"
-              src={userInfo.avatar || ''}
-              mode="aspectFit"
-            />
+            <View className="w-20 h-20 rounded-full border-4 border-white/20 bg-green-700 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <Image
+                className="w-full h-full object-contain"
+                src={userInfo.avatar || ''}
+                mode="aspectFit"
+              />
+            </View>
             <View className="flex-1 pt-1">
               <Text className="block text-xl font-bold text-white mb-1">
                 {userInfo.name || userInfo.nickname || '用户'}
@@ -232,11 +234,13 @@ const ProfilePage: FC = () => {
                     >
                       <View className="flex items-start gap-3">
                         {/* 头像 */}
-                        <Image
-                          className="w-12 h-12 rounded-full object-contain flex-shrink-0 bg-green-100"
-                          src={lawyer.avatar}
-                          mode="aspectFit"
-                        />
+                        <View className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                          <Image
+                            className="w-full h-full object-contain"
+                            src={lawyer.avatar}
+                            mode="aspectFit"
+                          />
+                        </View>
 
                         {/* 信息 */}
                         <View className="flex-1">
