@@ -55,6 +55,7 @@ const PartnersPage: FC = () => {
         console.log('激活的律师:', activeLawyers)
         setLawyers(activeLawyers)
       } else {
+        console.error('API 返回错误:', res.data?.msg)
         Taro.showToast({
           title: res.data?.msg || '加载失败',
           icon: 'none'
@@ -63,7 +64,7 @@ const PartnersPage: FC = () => {
     } catch (error) {
       console.error('加载律师列表错误:', error)
       Taro.showToast({
-        title: '网络错误',
+        title: '网络错误，请稍后重试',
         icon: 'none'
       })
     } finally {
@@ -82,18 +83,23 @@ const PartnersPage: FC = () => {
   const filteredLawyers = lawyers.filter((lawyer) => {
     if (!searchKeyword) return true
 
-    const keyword = searchKeyword.toLowerCase().trim()
-    const specialties = parseSpecialties(lawyer.specialties)
+    try {
+      const keyword = searchKeyword.toLowerCase().trim()
+      const specialties = parseSpecialties(lawyer.specialties)
 
-    // 支持搜索：姓名、职务、专业领域、地点
-    return (
-      lawyer.name.toLowerCase().includes(keyword) ||
-      lawyer.title.toLowerCase().includes(keyword) ||
-      specialties.some((specialty) =>
-        specialty.toLowerCase().includes(keyword)
-      ) ||
-      lawyer.location.toLowerCase().includes(keyword)
-    )
+      // 支持搜索：姓名、职务、专业领域、地点
+      return (
+        lawyer.name.toLowerCase().includes(keyword) ||
+        lawyer.title.toLowerCase().includes(keyword) ||
+        specialties.some((specialty) =>
+          specialty.toLowerCase().includes(keyword)
+        ) ||
+        lawyer.location.toLowerCase().includes(keyword)
+      )
+    } catch (error) {
+      console.error('搜索过滤错误:', error)
+      return false
+    }
   })
 
   // 搜索输入处理
@@ -151,71 +157,76 @@ const PartnersPage: FC = () => {
           {filteredLawyers.length > 0 ? (
             <View className="space-y-4">
               {filteredLawyers.map((lawyer) => {
-                const specialties = parseSpecialties(lawyer.specialties)
-                console.log(`律师 ${lawyer.name} 的 specialties:`, lawyer.specialties, '解析后:', specialties)
+                try {
+                  const specialties = parseSpecialties(lawyer.specialties)
+                  console.log(`律师 ${lawyer.name} 的 specialties:`, lawyer.specialties, '解析后:', specialties)
 
-                const handleImageError = () => {
-                  console.error(`图片加载失败: ${lawyer.avatar}`)
-                  setFailedImages(prev => new Set(prev).add(lawyer.id))
-                }
+                  const handleImageError = () => {
+                    console.error(`图片加载失败: ${lawyer.avatar}`)
+                    setFailedImages(prev => new Set(prev).add(lawyer.id))
+                  }
 
-                return (
-                  <View
-                    key={lawyer.id}
-                    className="bg-white rounded-2xl p-5 shadow-sm active:bg-gray-50"
-                    onClick={() => handleLawyerClick(lawyer.id)}
-                  >
-                    <View className="flex items-start gap-4">
-                      {/* 头像 */}
-                      {failedImages.has(lawyer.id) ? (
-                        // 图片加载失败时显示默认图标
-                        <View className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-100 flex-shrink-0">
-                          <User className="w-8 h-8 text-green-600" />
-                        </View>
-                      ) : (
-                        <Image
-                          className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
-                          src={lawyer.avatar}
-                          mode="aspectFill"
-                          onError={handleImageError}
-                        />
-                      )}
-
-                      {/* 信息 */}
-                      <View className="flex-1">
-                        <View className="flex items-center justify-between mb-1">
-                          <Text className="block text-base font-bold text-gray-900">
-                            {lawyer.name}
-                          </Text>
-                          <View className="flex items-center gap-1">
-                            <ArrowRight className="w-3 h-3 text-gray-400" />
-                            <Text className="text-xs text-gray-400">{lawyer.location}</Text>
+                  return (
+                    <View
+                      key={lawyer.id}
+                      className="bg-white rounded-2xl p-5 shadow-sm active:bg-gray-50"
+                      onClick={() => handleLawyerClick(lawyer.id)}
+                    >
+                      <View className="flex items-start gap-4">
+                        {/* 头像 */}
+                        {failedImages.has(lawyer.id) ? (
+                          // 图片加载失败时显示默认图标
+                          <View className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-100 flex-shrink-0">
+                            <User className="w-8 h-8 text-green-600" />
                           </View>
-                        </View>
-                        <Text className="block text-sm font-medium text-green-700 mb-2">
-                          {lawyer.title}
-                        </Text>
-                        <View className="flex flex-wrap gap-1">
-                          {specialties.slice(0, 2).map((specialty, index) => (
-                            <View
-                              key={index}
-                              className="bg-green-50 text-green-900 px-2 py-0.5 rounded-full"
-                            >
-                              <Text className="text-xs">{specialty}</Text>
+                        ) : (
+                          <Image
+                            className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
+                            src={lawyer.avatar || ''}
+                            mode="aspectFill"
+                            onError={handleImageError}
+                          />
+                        )}
+
+                        {/* 信息 */}
+                        <View className="flex-1">
+                          <View className="flex items-center justify-between mb-1">
+                            <Text className="block text-base font-bold text-gray-900">
+                              {lawyer.name || '未命名'}
+                            </Text>
+                            <View className="flex items-center gap-1">
+                              <ArrowRight className="w-3 h-3 text-gray-400" />
+                              <Text className="text-xs text-gray-400">{lawyer.location || '未知'}</Text>
                             </View>
-                          ))}
-                          {specialties.length > 2 && (
-                            <View className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                              <Text className="text-xs">
-                                +{specialties.length - 2}
-                              </Text>
-                            </View>
-                          )}
+                          </View>
+                          <Text className="block text-sm font-medium text-green-700 mb-2">
+                            {lawyer.title || '律师'}
+                          </Text>
+                          <View className="flex flex-wrap gap-1">
+                            {specialties.slice(0, 2).map((specialty, index) => (
+                              <View
+                                key={index}
+                                className="bg-green-50 text-green-900 px-2 py-0.5 rounded-full"
+                              >
+                                <Text className="text-xs">{specialty}</Text>
+                              </View>
+                            ))}
+                            {specialties.length > 2 && (
+                              <View className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                                <Text className="text-xs">
+                                  +{specialties.length - 2}
+                                </Text>
+                              </View>
+                            )}
+                          </View>
                         </View>
                       </View>
                     </View>
-                  </View>
-                )
+                  )
+                } catch (error) {
+                  console.error('渲染律师卡片时出错:', lawyer, error)
+                  return null
+                }
               })}
             </View>
           ) : (
