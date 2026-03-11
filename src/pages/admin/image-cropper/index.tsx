@@ -11,6 +11,9 @@ const ImageCropperPage: FC = () => {
   const [imageInfo, setImageInfo] = useState({ width: 0, height: 0 })
   const [scale, setScale] = useState(1)
   const [rotation, setRotation] = useState(0)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [cropping, setCropping] = useState(false)
 
   const canvasRef = useRef<any>(null)
@@ -51,6 +54,30 @@ const ImageCropperPage: FC = () => {
     setRotation((prev) => (prev + 90) % 360)
   }
 
+  const handleTouchStart = (e: any) => {
+    const touch = e.touches[0]
+    setIsDragging(true)
+    setDragStart({
+      x: touch.clientX - position.x,
+      y: touch.clientY - position.y
+    })
+  }
+
+  const handleTouchMove = (e: any) => {
+    if (!isDragging) return
+
+    e.preventDefault()
+    const touch = e.touches[0]
+    setPosition({
+      x: touch.clientX - dragStart.x,
+      y: touch.clientY - dragStart.y
+    })
+  }
+
+  const handleTouchEnd = () => {
+    setIsDragging(false)
+  }
+
   const handleCrop = async () => {
     setCropping(true)
 
@@ -84,12 +111,16 @@ const ImageCropperPage: FC = () => {
             drawHeight = imageInfo.width * scale
           }
 
+          // 计算中心偏移（考虑拖动位置）
+          const centerX = cropSize / 2 + position.x
+          const centerY = cropSize / 2 + position.y
+
           // 绘制图片
           ctx.fillStyle = '#ffffff'
           ctx.fillRect(0, 0, cropSize, cropSize)
 
           ctx.save()
-          ctx.translate(cropSize / 2, cropSize / 2)
+          ctx.translate(centerX, centerY)
           ctx.rotate((rotation * Math.PI) / 180)
 
           const img = canvas.createImage()
@@ -188,10 +219,13 @@ const ImageCropperPage: FC = () => {
             className={`cropper-image ${rotation !== 0 ? 'rotated' : ''}`}
             src={imageUrl}
             mode="aspectFit"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             style={{
               width: `${displayWidth}px`,
               height: `${displayHeight}px`,
-              transform: `rotate(${rotation}deg)`,
+              transform: `rotate(${rotation}deg) translate(${position.x}px, ${position.y}px)`,
             }}
           />
 
