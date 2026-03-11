@@ -134,22 +134,13 @@ const LoginPage: FC = () => {
                   </View>
                   <View className="flex-1">
                     <Text
-                      className={`block text-lg font-bold mb-1 ${
+                      className={`block text-lg font-bold ${
                         selectedRole === 'client'
                           ? 'text-green-900'
                           : 'text-gray-900'
                       }`}
                     >
                       客户
-                    </Text>
-                    <Text
-                      className={`text-sm ${
-                        selectedRole === 'client'
-                          ? 'text-green-800'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      查询咨询内容，获得法律帮助
                     </Text>
                   </View>
                   {selectedRole === 'client' && (
@@ -187,22 +178,13 @@ const LoginPage: FC = () => {
                   </View>
                   <View className="flex-1">
                     <Text
-                      className={`block text-lg font-bold mb-1 ${
+                      className={`block text-lg font-bold ${
                         selectedRole === 'partner'
                           ? 'text-amber-900'
                           : 'text-gray-900'
                       }`}
                     >
                       合伙人
-                    </Text>
-                    <Text
-                      className={`text-sm ${
-                        selectedRole === 'partner'
-                          ? 'text-amber-700'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      查看咨询消息，提供法律服务
                     </Text>
                   </View>
                   {selectedRole === 'partner' && (
