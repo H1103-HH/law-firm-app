@@ -39,10 +39,20 @@ const PartnersPage: FC = () => {
       })
 
       console.log('律师列表响应:', res)
+      console.log('响应数据结构:', {
+        hasData: !!res.data,
+        code: res.data?.code,
+        hasDataArray: Array.isArray(res.data?.data),
+        dataLength: Array.isArray(res.data?.data) ? res.data.data.length : 0
+      })
 
       if (res.data?.code === 200) {
         // 只显示激活的律师
-        setLawyers((res.data.data || []).filter((l: Lawyer) => l.is_active))
+        const allLawyers = res.data.data || []
+        console.log('所有律师:', allLawyers)
+        const activeLawyers = allLawyers.filter((l: Lawyer) => l.is_active)
+        console.log('激活的律师:', activeLawyers)
+        setLawyers(activeLawyers)
       } else {
         Taro.showToast({
           title: res.data?.msg || '加载失败',
@@ -63,8 +73,8 @@ const PartnersPage: FC = () => {
   // 解析 specialties 字符串为数组
   const parseSpecialties = (specialties: string): string[] => {
     if (!specialties) return []
-    // 支持逗号、顿号、分号等分隔符
-    return specialties.split(/[,，;；、]/).map(s => s.trim()).filter(s => s.length > 0)
+    // 支持逗号、顿号、分号、竖线等分隔符
+    return specialties.split(/[,，;；、|｜]/).map(s => s.trim()).filter(s => s.length > 0)
   }
 
   // 搜索过滤逻辑
@@ -141,6 +151,12 @@ const PartnersPage: FC = () => {
             <View className="space-y-4">
               {filteredLawyers.map((lawyer) => {
                 const specialties = parseSpecialties(lawyer.specialties)
+                console.log(`律师 ${lawyer.name} 的 specialties:`, lawyer.specialties, '解析后:', specialties)
+
+                const handleImageError = () => {
+                  console.error(`图片加载失败: ${lawyer.avatar}`)
+                }
+
                 return (
                   <View
                     key={lawyer.id}
@@ -153,6 +169,7 @@ const PartnersPage: FC = () => {
                         className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
                         src={lawyer.avatar}
                         mode="aspectFill"
+                        onError={handleImageError}
                       />
 
                       {/* 信息 */}
