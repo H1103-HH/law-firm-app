@@ -175,13 +175,13 @@ const ImageCropperPage: FC = () => {
 
   // 计算显示尺寸
   const containerSize = 300 // 容器尺寸
-  const displayScale = Math.min(
+  const baseDisplayScale = Math.min(
     containerSize / imageInfo.width,
     containerSize / imageInfo.height
-  ) * scale
+  )
 
-  const displayWidth = imageInfo.width * displayScale
-  const displayHeight = imageInfo.height * displayScale
+  const displayWidth = imageInfo.width * baseDisplayScale
+  const displayHeight = imageInfo.height * baseDisplayScale
 
   return (
     <View className="image-cropper-page">
@@ -225,7 +225,7 @@ const ImageCropperPage: FC = () => {
             style={{
               width: `${displayWidth}px`,
               height: `${displayHeight}px`,
-              transform: `rotate(${rotation}deg) translate(${position.x}px, ${position.y}px)`,
+              transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}deg) scale(${scale})`,
             }}
           />
 
