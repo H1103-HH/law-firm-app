@@ -186,8 +186,7 @@ const PartnerDetailPage: FC = () => {
             <View className="relative mb-4">
               <View className="w-24 h-24 rounded-full border-4 border-white bg-green-700 overflow-hidden flex items-center justify-center">
                 <Image
-                  className="w-auto h-auto"
-                  style={{ maxWidth: '100%', maxHeight: '100%' }}
+                  className="w-24 h-24"
                   src={lawyer.avatar}
                   mode="aspectFit"
                 />

@@ -166,8 +166,7 @@ const ProfilePage: FC = () => {
           <View className="flex items-start gap-4">
             <View className="w-20 h-20 rounded-full border-4 border-white/20 bg-green-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
               <Image
-                className="w-auto h-auto"
-                style={{ maxWidth: '100%', maxHeight: '100%' }}
+                className="w-20 h-20"
                 src={userInfo.avatar || ''}
                 mode="aspectFit"
               />
@@ -237,8 +236,7 @@ const ProfilePage: FC = () => {
                         {/* 头像 */}
                         <View className="w-12 h-12 rounded-full bg-green-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
                           <Image
-                            className="w-auto h-auto"
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                            className="w-12 h-12"
                             src={lawyer.avatar}
                             mode="aspectFit"
                           />
