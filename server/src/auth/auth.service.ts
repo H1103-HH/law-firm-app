@@ -64,8 +64,8 @@ export class AuthService {
       user = newUser
     }
 
-    // 生成 token（简单实现，生产环境应使用 JWT）
-    const token = `token_${Math.random().toString(36).substring(2)}${Date.now().toString(36)}`
+    // 生成 token（简单实现，将用户 ID 编码到 token 中）
+    const token = `token_${user.id}_${Math.random().toString(36).substring(2)}${Date.now().toString(36)}`
 
     // 返回用户信息
     return {

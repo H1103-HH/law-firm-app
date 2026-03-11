@@ -8,6 +8,7 @@ export default defineAppConfig({
     'pages/new-consultation/index',
     'pages/webview/index',
     'pages/login/index',
+    'pages/saved-cards/index',
     'pages/admin/login/index',
     'pages/admin/lawyers/index',
     'pages/admin/lawyer-form/index',

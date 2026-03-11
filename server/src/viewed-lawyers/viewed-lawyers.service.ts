@@ -80,7 +80,7 @@ export class ViewedLawyersService {
           lawyer_id,
           user_id,
           viewed_at,
-          lawyers (
+          lawyers!inner (
             id,
             name,
             title,
@@ -97,21 +97,30 @@ export class ViewedLawyersService {
         throw new Error(`查询浏览历史失败: ${error.message}`)
       }
 
+      console.log('浏览历史原始数据:', JSON.stringify(data, null, 2))
+
       // 格式化返回数据
-      const formattedData = (data || []).map((item: any) => ({
-        id: item.id,
-        lawyerId: item.lawyer_id,
-        userId: item.user_id,
-        viewedAt: item.viewed_at,
-        lawyer: item.lawyers && Array.isArray(item.lawyers) ? {
-          id: item.lawyers[0]?.id,
-          name: item.lawyers[0]?.name,
-          title: item.lawyers[0]?.title,
-          avatar: item.lawyers[0]?.avatar,
-          location: item.lawyers[0]?.location,
-          specialties: item.lawyers[0]?.specialties,
-        } : undefined,
-      }))
+      const formattedData = (data || []).map((item: any) => {
+        console.log('处理浏览记录:', item)
+        const lawyer = item.lawyers
+
+        return {
+          id: item.id,
+          lawyerId: item.lawyer_id,
+          userId: item.user_id,
+          viewedAt: item.viewed_at,
+          lawyer: lawyer ? {
+            id: lawyer.id,
+            name: lawyer.name,
+            title: lawyer.title,
+            avatar: lawyer.avatar,
+            location: lawyer.location,
+            specialties: lawyer.specialties,
+          } : undefined,
+        }
+      })
+
+      console.log('格式化后的数据:', JSON.stringify(formattedData, null, 2))
 
       return formattedData as ViewedLawyerWithDetails[]
     } catch (error) {

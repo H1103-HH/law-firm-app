@@ -74,7 +74,7 @@ export class SavedCardsService {
           lawyer_id,
           user_id,
           saved_at,
-          lawyers (
+          lawyers!inner (
             id,
             name,
             title,
@@ -92,22 +92,31 @@ export class SavedCardsService {
         throw new Error(`查询收藏名片失败: ${error.message}`)
       }
 
+      console.log('收藏列表原始数据:', JSON.stringify(data, null, 2))
+
       // 格式化返回数据
-      const formattedData = (data || []).map((item: any) => ({
-        id: item.id,
-        lawyerId: item.lawyer_id,
-        userId: item.user_id,
-        savedAt: item.saved_at,
-        lawyer: item.lawyers && Array.isArray(item.lawyers) ? {
-          id: item.lawyers[0]?.id,
-          name: item.lawyers[0]?.name,
-          title: item.lawyers[0]?.title,
-          avatar: item.lawyers[0]?.avatar,
-          location: item.lawyers[0]?.location,
-          phone: item.lawyers[0]?.phone,
-          email: item.lawyers[0]?.email,
-        } : undefined,
-      }))
+      const formattedData = (data || []).map((item: any) => {
+        console.log('处理收藏记录:', item)
+        const lawyer = item.lawyers
+
+        return {
+          id: item.id,
+          lawyerId: item.lawyer_id,
+          userId: item.user_id,
+          savedAt: item.saved_at,
+          lawyer: lawyer ? {
+            id: lawyer.id,
+            name: lawyer.name,
+            title: lawyer.title,
+            avatar: lawyer.avatar,
+            location: lawyer.location,
+            phone: lawyer.phone,
+            email: lawyer.email,
+          } : undefined,
+        }
+      })
+
+      console.log('格式化后的数据:', JSON.stringify(formattedData, null, 2))
 
       return formattedData as SavedCardWithDetails[]
     } catch (error) {

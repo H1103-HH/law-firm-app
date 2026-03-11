@@ -277,7 +277,10 @@ const ProfilePage: FC = () => {
 
           {/* 其他菜单 */}
           <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <View className="flex items-center justify-between p-4 border-b border-gray-100 active:bg-gray-50">
+            <View
+              className="flex items-center justify-between p-4 border-b border-gray-100 active:bg-gray-50"
+              onClick={() => Taro.navigateTo({ url: '/pages/saved-cards/index' })}
+            >
               <View className="flex items-center gap-3">
                 <BookOpen className="w-5 h-5 text-green-700" />
                 <Text className="block text-sm text-gray-900">我的收藏</Text>

@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Delete, Body, Query, Headers } from '@nestjs/common'
 import { ViewedLawyersService } from './viewed-lawyers.service'
-import { getSupabaseClient } from '@/storage/database/supabase-client'
 
 @Controller('viewed-lawyers')
 export class ViewedLawyersController {
@@ -11,24 +10,22 @@ export class ViewedLawyersController {
   /**
    * 从 token 获取用户信息
    */
-  private async getUserFromToken(token: string) {
-    const client = getSupabaseClient()
-
-    // 暂时使用用户 openid 来查找用户
-    // 由于当前 token 格式简单，我们假设需要通过其他方式获取 userId
-    // 为了演示功能，我们查询第一个用户（实际应用中应该使用 proper JWT）
-
-    // 这里返回第一个用户的 ID 作为测试
-    const { data: users, error } = await client
-      .from('users')
-      .select('id')
-      .limit(1)
-
-    if (error || !users || users.length === 0) {
+  private getUserFromToken(token: string): number | null {
+    try {
+      // token 格式: token_{userId}_{randomString}
+      // 解析出 userId
+      const parts = token.split('_')
+      if (parts.length >= 2 && parts[0] === 'token') {
+        const userId = parseInt(parts[1])
+        if (!isNaN(userId)) {
+          return userId
+        }
+      }
+      return null
+    } catch (error) {
+      console.error('解析 token 失败:', error)
       return null
     }
-
-    return users[0].id
   }
 
   /**
@@ -49,7 +46,7 @@ export class ViewedLawyersController {
         }
       }
 
-      const userId = await this.getUserFromToken(token)
+      const userId = this.getUserFromToken(token)
       if (!userId) {
         return {
           code: 401,
@@ -93,7 +90,7 @@ export class ViewedLawyersController {
         }
       }
 
-      const userId = await this.getUserFromToken(token)
+      const userId = this.getUserFromToken(token)
       if (!userId) {
         return {
           code: 401,
@@ -137,7 +134,7 @@ export class ViewedLawyersController {
         }
       }
 
-      const userId = await this.getUserFromToken(token)
+      const userId = this.getUserFromToken(token)
       if (!userId) {
         return {
           code: 401,

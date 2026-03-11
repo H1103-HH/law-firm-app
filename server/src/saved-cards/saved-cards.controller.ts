@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Delete, Body, Query, Headers } from '@nestjs/common'
 import { SavedCardsService } from './saved-cards.service'
-import { getSupabaseClient } from '@/storage/database/supabase-client'
 
 @Controller('saved-cards')
 export class SavedCardsController {
@@ -11,20 +10,22 @@ export class SavedCardsController {
   /**
    * 从 token 获取用户信息
    */
-  private async getUserFromToken(token: string) {
-    const client = getSupabaseClient()
-
-    // 查询第一个用户的 ID 作为测试
-    const { data: users, error } = await client
-      .from('users')
-      .select('id')
-      .limit(1)
-
-    if (error || !users || users.length === 0) {
+  private getUserFromToken(token: string): number | null {
+    try {
+      // token 格式: token_{userId}_{randomString}
+      // 解析出 userId
+      const parts = token.split('_')
+      if (parts.length >= 2 && parts[0] === 'token') {
+        const userId = parseInt(parts[1])
+        if (!isNaN(userId)) {
+          return userId
+        }
+      }
+      return null
+    } catch (error) {
+      console.error('解析 token 失败:', error)
       return null
     }
-
-    return users[0].id
   }
 
   /**
@@ -45,7 +46,7 @@ export class SavedCardsController {
         }
       }
 
-      const userId = await this.getUserFromToken(token)
+      const userId = this.getUserFromToken(token)
       if (!userId) {
         return {
           code: 401,
@@ -89,7 +90,7 @@ export class SavedCardsController {
         }
       }
 
-      const userId = await this.getUserFromToken(token)
+      const userId = this.getUserFromToken(token)
       if (!userId) {
         return {
           code: 401,
@@ -119,7 +120,18 @@ export class SavedCardsController {
   }
 
   /**
-   * 取消收藏名片
+   * 取消收藏名片（POST接口，兼容前端）
+   */
+  @Post('unsave')
+  async unsaveCardByPost(
+    @Body() body: { lawyerId: number },
+    @Headers('authorization') authHeader: string,
+  ) {
+    return this.unsaveCard(body, authHeader)
+  }
+
+  /**
+   * 取消收藏名片（DELETE接口）
    */
   @Delete()
   async unsaveCard(
@@ -136,7 +148,7 @@ export class SavedCardsController {
         }
       }
 
-      const userId = await this.getUserFromToken(token)
+      const userId = this.getUserFromToken(token)
       if (!userId) {
         return {
           code: 401,
@@ -180,7 +192,7 @@ export class SavedCardsController {
         }
       }
 
-      const userId = await this.getUserFromToken(token)
+      const userId = this.getUserFromToken(token)
       if (!userId) {
         return {
           code: 401,
@@ -197,7 +209,7 @@ export class SavedCardsController {
       return {
         code: 200,
         msg: 'success',
-        data: result
+        data: { saved: result }
       }
     } catch (error: any) {
       console.error('查询收藏状态失败:', error)
