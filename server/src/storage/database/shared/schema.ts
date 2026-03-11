@@ -71,6 +71,18 @@ export const viewedLawyers = pgTable("viewed_lawyers", {
   index("viewed_lawyers_user_lawyer_idx").on(table.userId, table.lawyerId),
 ])
 
+// 收藏名片表
+export const savedCards = pgTable("saved_cards", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  lawyerId: integer("lawyer_id").notNull().references(() => lawyers.id),
+  savedAt: timestamp("saved_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+  index("saved_cards_user_id_idx").on(table.userId),
+  index("saved_cards_lawyer_id_idx").on(table.lawyerId),
+  index("saved_cards_user_lawyer_idx").on(table.userId, table.lawyerId),
+])
+
 // Zod Schemas for validation
 const { createInsertSchema: createCoercedInsertSchema } = createSchemaFactory({
   coerce: { date: true },
@@ -112,4 +124,5 @@ export type Lawyer = typeof lawyers.$inferSelect
 export type InsertLawyer = z.infer<typeof insertLawyerSchema>
 export type UpdateLawyer = z.infer<typeof updateLawyerSchema>
 export type ViewedLawyer = typeof viewedLawyers.$inferSelect
+export type SavedCard = typeof savedCards.$inferSelect
 

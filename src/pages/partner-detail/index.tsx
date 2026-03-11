@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
 import Taro, { useLoad, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { useState, useEffect } from 'react'
-import { Phone, Mail, Globe, Award, Share2 } from 'lucide-react-taro'
+import { Phone, Mail, Globe, Award, Share2, Bookmark, BookmarkCheck } from 'lucide-react-taro'
 import type { FC } from 'react'
 import { Network } from '@/network'
 import './index.css'
@@ -25,6 +25,8 @@ interface Lawyer {
 const PartnerDetailPage: FC = () => {
   const [lawyer, setLawyer] = useState<Lawyer | null>(null)
   const [loading, setLoading] = useState(true)
+  const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   useLoad((options) => {
     console.log('合伙人详情页参数:', options)
@@ -78,6 +80,9 @@ const PartnerDetailPage: FC = () => {
 
         // 记录浏览历史
         await recordViewHistory(id)
+
+        // 检查是否已收藏
+        await checkSavedStatus(id)
       } else {
         Taro.showToast({
           title: '未找到律师信息',
@@ -120,21 +125,101 @@ const PartnerDetailPage: FC = () => {
     }
   }
 
+  // 检查是否已收藏
+  const checkSavedStatus = async (lawyerId: number) => {
+    try {
+      const token = Taro.getStorageSync('token')
+      if (!token) {
+        return
+      }
+
+      const res = await Network.request({
+        url: '/api/saved-cards/check',
+        method: 'GET',
+        data: { lawyerId }
+      })
+
+      if (res.data?.code === 200) {
+        setSaved(res.data.data.saved || false)
+      }
+    } catch (error) {
+      console.error('检查收藏状态失败:', error)
+    }
+  }
+
+  // 收下名片
+  const handleSaveCard = async () => {
+    if (!lawyer) return
+
+    const token = Taro.getStorageSync('token')
+    if (!token) {
+      Taro.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+
+    setSaving(true)
+
+    try {
+      const res = await Network.request({
+        url: '/api/saved-cards/save',
+        method: 'POST',
+        data: { lawyerId: lawyer.id }
+      })
+
+      if (res.data?.code === 200) {
+        setSaved(true)
+        Taro.showToast({
+          title: res.data.msg,
+          icon: 'success'
+        })
+      } else {
+        Taro.showToast({
+          title: res.data?.msg || '收藏失败',
+          icon: 'none'
+        })
+      }
+    } catch (error) {
+      console.error('收藏名片失败:', error)
+      Taro.showToast({
+        title: '收藏失败',
+        icon: 'none'
+      })
+    } finally {
+      setSaving(false)
+    }
+  }
+
   // 解析 specialties 字符串为数组
   const parseSpecialties = (specialties: string): string[] => {
     if (!specialties) return []
     return specialties.split(/[,，;；、]/).map(s => s.trim()).filter(s => s.length > 0)
   }
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!lawyer) return
 
     // 提示用户使用右上角菜单分享
     Taro.showModal({
-      title: '分享提示',
-      content: '请点击右上角"···"菜单，选择"转发"分享给好友，或"分享到朋友圈"',
+      title: '分享名片',
+      content: `${lawyer.name}\n${lawyer.title}\n\n📍 ${lawyer.location}\n${lawyer.phone ? '📞 ' + lawyer.phone : ''}\n${lawyer.email ? '📧 ' + lawyer.email : ''}`,
       showCancel: false,
-      confirmText: '我知道了'
+      confirmText: '复制信息',
+      success: () => {
+        const cardInfo = `${lawyer.name} - ${lawyer.title}\n📍 ${lawyer.location}\n${lawyer.phone ? '📞 ' + lawyer.phone : ''}\n${lawyer.email ? '📧 ' + lawyer.email : ''}`
+        
+        Taro.setClipboardData({
+          data: cardInfo,
+          success: () => {
+            Taro.showToast({
+              title: '名片信息已复制',
+              icon: 'success'
+            })
+          }
+        })
+      }
     })
   }
 
@@ -334,14 +419,34 @@ const PartnerDetailPage: FC = () => {
             </View>
           )}
 
-          {/* 分享按钮 */}
-          <Button
-            className="w-full bg-green-700 text-white rounded-xl py-3 flex items-center justify-center gap-2"
-            onClick={handleShare}
-          >
-            <Share2 className="w-5 h-5 text-white" />
-            <Text className="text-white font-medium">分享名片</Text>
-          </Button>
+          {/* 收下名片和分享按钮 */}
+          <View className="flex gap-3">
+            <Button
+              className="flex-1 bg-white border-2 border-green-700 text-green-700 rounded-xl py-3 flex items-center justify-center gap-2"
+              onClick={handleSaveCard}
+              disabled={saving}
+            >
+              {saved ? (
+                <>
+                  <BookmarkCheck className="w-5 h-5 text-green-700" />
+                  <Text className="text-green-700 font-medium">已收藏</Text>
+                </>
+              ) : (
+                <>
+                  <Bookmark className="w-5 h-5 text-green-700" />
+                  <Text className="text-green-700 font-medium">{saving ? '收藏中...' : '收下名片'}</Text>
+                </>
+              )}
+            </Button>
+
+            <Button
+              className="flex-1 bg-green-700 text-white rounded-xl py-3 flex items-center justify-center gap-2"
+              onClick={handleShare}
+            >
+              <Share2 className="w-5 h-5 text-white" />
+              <Text className="text-white font-medium">分享名片</Text>
+            </Button>
+          </View>
         </View>
       </ScrollView>
     </View>
