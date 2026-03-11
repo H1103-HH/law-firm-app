@@ -201,11 +201,6 @@ const PartnerDetailPage: FC = () => {
   const handleShare = async () => {
     if (!lawyer) return
 
-    // 显示分享按钮
-    Taro.showShareMenu({
-      withShareTicket: true
-    })
-
     // 提示用户使用右上角菜单分享
     Taro.showModal({
       title: '分享名片',
