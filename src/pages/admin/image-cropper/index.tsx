@@ -215,19 +215,29 @@ const ImageCropperPage: FC = () => {
           />
 
           {/* 图片预览 */}
-          <Image
-            className={`cropper-image ${rotation !== 0 ? 'rotated' : ''}`}
-            src={imageUrl}
-            mode="aspectFit"
+          <View
+            className="image-wrapper"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             style={{
-              width: `${displayWidth}px`,
-              height: `${displayHeight}px`,
-              transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}deg) scale(${scale})`,
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: `translate3d(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px), 0) rotate(${rotation}deg) scale(${scale})`,
+              transformOrigin: 'center center',
             }}
-          />
+          >
+            <Image
+              className={`cropper-image ${rotation !== 0 ? 'rotated' : ''}`}
+              src={imageUrl}
+              mode="aspectFit"
+              style={{
+                width: `${displayWidth}px`,
+                height: `${displayHeight}px`,
+              }}
+            />
+          </View>
 
           {/* 裁剪框 */}
           <View className="crop-box">
@@ -272,6 +282,7 @@ const ImageCropperPage: FC = () => {
             max={3}
             step={0.1}
             onChange={(e) => setScale(e.detail.value)}
+            onChanging={(e) => setScale(e.detail.value)}
             activeColor="#1890ff"
             backgroundColor="#e0e0e0"
             showValue
