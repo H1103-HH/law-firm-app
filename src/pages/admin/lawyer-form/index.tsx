@@ -235,9 +235,10 @@ const LawyerFormPage: FC = () => {
                   <View className="flex items-center gap-4">
                     <View className="w-20 h-20 rounded-full bg-green-50 overflow-hidden flex items-center justify-center">
                       <Image
-                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                        className="w-auto h-auto"
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
                         src={formData.avatar}
-                        mode="scaleToFill"
+                        mode="aspectFit"
                       />
                     </View>
                     <Button

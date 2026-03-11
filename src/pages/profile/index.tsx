@@ -166,9 +166,10 @@ const ProfilePage: FC = () => {
           <View className="flex items-start gap-4">
             <View className="w-20 h-20 rounded-full border-4 border-white/20 bg-green-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
               <Image
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                className="w-auto h-auto"
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
                 src={userInfo.avatar || ''}
-                mode="scaleToFill"
+                mode="aspectFit"
               />
             </View>
             <View className="flex-1 pt-1">
@@ -236,9 +237,10 @@ const ProfilePage: FC = () => {
                         {/* 头像 */}
                         <View className="w-12 h-12 rounded-full bg-green-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
                           <Image
-                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            className="w-auto h-auto"
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
                             src={lawyer.avatar}
-                            mode="scaleToFill"
+                            mode="aspectFit"
                           />
                         </View>
 
