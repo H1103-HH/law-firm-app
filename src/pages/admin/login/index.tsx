@@ -1,7 +1,7 @@
 import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState } from 'react'
-import { ArrowLeft } from 'lucide-react-taro'
+import { Shield, LogIn } from 'lucide-react-taro'
 import { Network } from '@/network'
 import type { FC } from 'react'
 import './index.css'
@@ -14,7 +14,7 @@ const AdminLoginPage: FC = () => {
   const handleLogin = async () => {
     if (!username || !password) {
       Taro.showToast({
-        title: '请输入账号和密码',
+        title: '请输入用户名和密码',
         icon: 'none'
       })
       return
@@ -29,7 +29,10 @@ const AdminLoginPage: FC = () => {
         data: { username, password }
       })
 
+      console.log('登录响应:', res)
+
       if (res.data?.code === 200) {
+        // 保存登录信息
         Taro.setStorageSync('adminToken', res.data.data.token)
         Taro.setStorageSync('adminInfo', res.data.data)
 
@@ -38,6 +41,7 @@ const AdminLoginPage: FC = () => {
           icon: 'success'
         })
 
+        // 跳转到律师管理列表页
         setTimeout(() => {
           Taro.redirectTo({
             url: '/pages/admin/lawyers/index'
@@ -50,6 +54,7 @@ const AdminLoginPage: FC = () => {
         })
       }
     } catch (error) {
+      console.error('登录错误:', error)
       Taro.showToast({
         title: '网络错误，请重试',
         icon: 'none'
@@ -60,63 +65,70 @@ const AdminLoginPage: FC = () => {
   }
 
   return (
-    <View className="admin-login-page">
-      <View className="navbar">
-        <Button
-          className="navbar-btn"
-          onClick={() => Taro.navigateBack()}
-        >
-          <ArrowLeft size={20} color="#333" />
-        </Button>
-      </View>
-
-      <View className="content">
-        {/* 标题区域 */}
-        <View className="header">
-          <Text className="title">欢迎回来！</Text>
-          <Text className="subtitle">欢迎使用，德恒律师事务所管理系统</Text>
+    <View className="min-h-screen bg-gradient-to-b from-green-900 to-green-950 p-6 flex flex-col">
+      {/* 头部 */}
+      <View className="flex-1 flex flex-col justify-center items-center">
+        <View className="bg-white/10 rounded-full p-6 mb-6">
+          <Shield className="w-20 h-20 text-white" />
         </View>
 
-        {/* 输入框区域 */}
-        <View className="form-section">
-          <View className="input-group">
-            <View className="input-wrapper">
-              <Text className="input-icon">👤</Text>
+        <Text className="block text-3xl font-bold text-white mb-2 text-center">
+          管理员登录
+        </Text>
+        <Text className="block text-green-200 mb-8 text-center">
+          律师信息管理系统
+        </Text>
+
+        {/* 登录表单 */}
+        <View className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-lg">
+          <View className="mb-4">
+            <Text className="block text-sm text-gray-700 mb-2">用户名</Text>
+            <View className="bg-gray-50 rounded-lg px-4 py-3">
               <Input
-                className="input"
-                type="text"
-                placeholder="请输入账号"
+                className="w-full bg-transparent text-base"
+                placeholder="请输入用户名"
                 value={username}
                 onInput={(e) => setUsername(e.detail.value)}
-                placeholderClass="input-placeholder"
+                placeholderClass="text-gray-400"
               />
             </View>
           </View>
 
-          <View className="input-group">
-            <View className="input-wrapper">
-              <Text className="input-icon">🔒</Text>
+          <View className="mb-6">
+            <Text className="block text-sm text-gray-700 mb-2">密码</Text>
+            <View className="bg-gray-50 rounded-lg px-4 py-3">
               <Input
-                className="input"
-                type="text"
+                className="w-full bg-transparent text-base"
                 password
                 placeholder="请输入密码"
                 value={password}
                 onInput={(e) => setPassword(e.detail.value)}
-                placeholderClass="input-placeholder"
+                placeholderClass="text-gray-400"
               />
             </View>
           </View>
 
           <Button
-            className="submit-btn"
+            className="w-full bg-green-700 text-white rounded-lg py-3 flex items-center justify-center gap-2"
             onClick={handleLogin}
             disabled={loading}
           >
-            <Text className="submit-btn-text">
-              {loading ? '登录中...' : '登录'}
-            </Text>
+            {loading ? (
+              <Text className="text-white">登录中...</Text>
+            ) : (
+              <>
+                <LogIn className="w-5 h-5" />
+                <Text className="text-white font-medium">登录</Text>
+              </>
+            )}
           </Button>
+        </View>
+
+        {/* 提示信息 */}
+        <View className="mt-6 text-center">
+          <Text className="block text-xs text-green-200">
+            默认账号：admin / admin123
+          </Text>
         </View>
       </View>
     </View>
