@@ -7,7 +7,6 @@
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 16px;
   position: fixed;
   top: 0;
@@ -24,10 +23,4 @@
   align-items: center;
   justify-content: center;
   min-width: 40px;
-}
-
-.navbar-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
 }
