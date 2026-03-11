@@ -222,9 +222,8 @@ const ProfilePage: FC = () => {
                   if (!lawyer) return null
 
                   const specialties = lawyer.specialties
-                    .split(/[,，;；、]/)
-                    .map((s) => s.trim())
-                    .filter((s) => s.length > 0)
+                    ? lawyer.specialties.split(/[,，;；、]/).map((s) => s.trim()).filter((s) => s.length > 0)
+                    : []
 
                   return (
                     <View
