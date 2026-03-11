@@ -188,7 +188,7 @@ const PartnerDetailPage: FC = () => {
                 <Image
                   className="w-24 h-24"
                   src={lawyer.avatar}
-                  mode="aspectFit"
+                  mode="aspectFill"
                 />
               </View>
             </View>

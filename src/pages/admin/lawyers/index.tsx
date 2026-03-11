@@ -189,7 +189,7 @@ const AdminLawyersPage: FC = () => {
                       <Image
                         className="w-16 h-16"
                         src={lawyer.avatar}
-                        mode="aspectFit"
+                        mode="aspectFill"
                       />
                     </View>
                     <View className="flex-1">

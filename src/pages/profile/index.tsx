@@ -168,7 +168,7 @@ const ProfilePage: FC = () => {
               <Image
                 className="w-20 h-20"
                 src={userInfo.avatar || ''}
-                mode="aspectFit"
+                mode="aspectFill"
               />
             </View>
             <View className="flex-1 pt-1">
@@ -238,7 +238,7 @@ const ProfilePage: FC = () => {
                           <Image
                             className="w-12 h-12"
                             src={lawyer.avatar}
-                            mode="aspectFit"
+                            mode="aspectFill"
                           />
                         </View>
 

@@ -237,7 +237,7 @@ const LawyerFormPage: FC = () => {
                       <Image
                         className="w-20 h-20"
                         src={formData.avatar}
-                        mode="aspectFit"
+                        mode="aspectFill"
                       />
                     </View>
                     <Button
