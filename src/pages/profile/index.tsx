@@ -2,29 +2,17 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useLoad, useDidShow } from '@tarojs/taro'
 import { useState } from 'react'
 import {
-  MessageCircle,
   BookOpen,
   Settings,
   LogOut,
   Shield,
   ChevronRight,
-  User
+  User,
+  Eye
 } from 'lucide-react-taro'
 import type { FC } from 'react'
 import { Network } from '@/network'
 import './index.css'
-
-interface Consultation {
-  id: number
-  title: string
-  content: string
-  status: 'pending' | 'replied'
-  createTime: string
-  lawyerName?: string
-  lawyerAvatar?: string
-  reply?: string
-  replyTime?: string
-}
 
 interface UserInfo {
   id: number
@@ -37,9 +25,24 @@ interface UserInfo {
   title?: string
 }
 
+interface ViewedLawyer {
+  id: number
+  lawyer_id: number
+  user_id: number
+  viewed_at: string
+  lawyer?: {
+    id: number
+    name: string
+    title: string
+    avatar: string
+    location: string
+    specialties: string
+  }
+}
+
 const ProfilePage: FC = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
-  const [consultations, setConsultations] = useState<Consultation[]>([])
+  const [viewedLawyers, setViewedLawyers] = useState<ViewedLawyer[]>([])
 
   useLoad(() => {
     console.log('我的页面加载')
@@ -56,81 +59,34 @@ const ProfilePage: FC = () => {
       const storedUserInfo = Taro.getStorageSync('userInfo')
       if (storedUserInfo) {
         setUserInfo(storedUserInfo)
-        // 加载咨询数据
-        loadConsultations(storedUserInfo.role)
+        // 加载查看历史
+        loadViewedLawyers()
       }
     } catch (error) {
       console.error('加载用户信息失败:', error)
     }
   }
 
-  const loadConsultations = async (userType: 'client' | 'partner') => {
+  const loadViewedLawyers = async () => {
     try {
       const res = await Network.request({
-        url: '/api/consultations',
-        data: { userType }
+        url: '/api/viewed-lawyers',
+        method: 'GET'
       })
 
       if (res.data.code === 200) {
-        setConsultations(res.data.data || [])
+        setViewedLawyers(res.data.data || [])
       }
     } catch (error) {
-      console.error('加载咨询数据失败:', error)
-      // 使用模拟数据
-      const mockConsultations: Consultation[] =
-        userType === 'client'
-          ? [
-              {
-                id: 1,
-                title: '关于公司注册的咨询',
-                content: '您好，我想咨询一下公司注册的相关流程和需要准备的材料。',
-                status: 'replied',
-                createTime: '2024-03-01 10:30',
-                lawyerName: '张律师',
-                lawyerAvatar:
-                  'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop',
-                reply: '您好，公司注册需要准备以下材料：1. 公司章程 2. 股东身份证明 3. 注册地址证明等。',
-                replyTime: '2024-03-01 14:20'
-              },
-              {
-                id: 2,
-                title: '劳动合同纠纷咨询',
-                content: '我想咨询一下劳动合同解除的相关法律问题。',
-                status: 'pending',
-                createTime: '2024-03-05 09:15'
-              }
-            ]
-          : [
-              {
-                id: 1,
-                title: '关于公司注册的咨询',
-                content: '您好，我想咨询一下公司注册的相关流程和需要准备的材料。',
-                status: 'replied',
-                createTime: '2024-03-01 10:30',
-                reply: '您好，公司注册需要准备以下材料：1. 公司章程 2. 股东身份证明 3. 注册地址证明等。',
-                replyTime: '2024-03-01 14:20'
-              },
-              {
-                id: 3,
-                title: '房产纠纷咨询',
-                content: '您好，我遇到了房产纠纷问题，想咨询一下如何处理。',
-                status: 'pending',
-                createTime: '2024-03-06 11:20'
-              }
-            ]
-      setConsultations(mockConsultations)
+      console.error('加载查看历史失败:', error)
+      // 使用空数组
+      setViewedLawyers([])
     }
   }
 
-  const handleConsultationClick = (consultation: Consultation) => {
+  const handleLawyerClick = (lawyerId: number) => {
     Taro.navigateTo({
-      url: `/pages/consultation-detail/index?id=${consultation.id}&type=${userInfo?.role}`
-    })
-  }
-
-  const handleNewConsultation = () => {
-    Taro.navigateTo({
-      url: '/pages/new-consultation/index'
+      url: `/pages/partner-detail/index?id=${lawyerId}`
     })
   }
 
@@ -143,7 +99,7 @@ const ProfilePage: FC = () => {
           Taro.removeStorageSync('userInfo')
           Taro.removeStorageSync('token')
           setUserInfo(null)
-          setConsultations([])
+          setViewedLawyers([])
           Taro.showToast({
             title: '已退出登录',
             icon: 'success'
@@ -157,6 +113,19 @@ const ProfilePage: FC = () => {
     Taro.navigateTo({
       url: '/pages/login/index'
     })
+  }
+
+  // 格式化时间
+  const formatTime = (timeStr: string) => {
+    const date = new Date(timeStr)
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+    if (days === 0) return '今天'
+    if (days === 1) return '昨天'
+    if (days < 7) return `${days} 天前`
+    return date.toLocaleDateString('zh-CN')
   }
 
   // 未登录状态
@@ -174,7 +143,7 @@ const ProfilePage: FC = () => {
                 登录后查看更多内容
               </Text>
               <Text className="block text-sm text-gray-500 mb-6">
-                登录后可以查看咨询记录、管理个人信息等
+                登录后可以查看浏览历史、管理个人信息等
               </Text>
               <View
                 className="bg-green-900 text-white rounded-2xl py-4 px-6 w-full text-center active:bg-green-800"
@@ -220,148 +189,87 @@ const ProfilePage: FC = () => {
         </View>
 
         <View className="px-4 pb-6">
-          {/* 客户视图 */}
-          {userInfo.role === 'client' && (
-            <>
-              {/* 我的咨询 */}
-              <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
-                <View className="flex items-center justify-between mb-4">
-                  <View className="flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5 text-green-700" />
-                    <Text className="block text-base font-bold text-gray-900">
-                      我的咨询
-                    </Text>
-                  </View>
-                  <Text className="text-sm text-gray-500">
-                    {consultations.length} 条
-                  </Text>
-                </View>
+          {/* 我看过的律师 */}
+          <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
+            <View className="flex items-center justify-between mb-4">
+              <View className="flex items-center gap-2">
+                <Eye className="w-5 h-5 text-green-700" />
+                <Text className="block text-base font-bold text-gray-900">
+                  我看过的律师
+                </Text>
+              </View>
+              <Text className="text-sm text-gray-500">
+                {viewedLawyers.length} 位
+              </Text>
+            </View>
 
-                {consultations.length === 0 ? (
-                  <View className="text-center py-8">
-                    <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-3" />
-                    <Text className="block text-sm text-gray-500 mb-4">
-                      暂无咨询记录
-                    </Text>
+            {viewedLawyers.length === 0 ? (
+              <View className="text-center py-8">
+                <Eye className="w-16 h-16 text-gray-300 mx-auto mb-3" />
+                <Text className="block text-sm text-gray-500 mb-2">
+                  暂无浏览记录
+                </Text>
+                <Text className="block text-xs text-gray-400">
+                  浏览律师名片后，将在这里显示
+                </Text>
+              </View>
+            ) : (
+              <View className="space-y-3">
+                {viewedLawyers.map((item) => {
+                  const lawyer = item.lawyer
+                  if (!lawyer) return null
+
+                  const specialties = lawyer.specialties
+                    .split(/[,，;；、]/)
+                    .map((s) => s.trim())
+                    .filter((s) => s.length > 0)
+
+                  return (
                     <View
-                      className="bg-green-900 text-white rounded-xl py-3 px-6 mx-auto w-fit"
-                      onClick={handleNewConsultation}
+                      key={item.id}
+                      className="bg-gray-50 rounded-xl p-4 active:bg-gray-100"
+                      onClick={() => handleLawyerClick(lawyer.id)}
                     >
-                      <Text className="block text-sm font-medium">发起咨询</Text>
-                    </View>
-                  </View>
-                ) : (
-                  <View className="space-y-3">
-                    {consultations.map((consultation) => (
-                      <View
-                        key={consultation.id}
-                        className="bg-gray-50 rounded-xl p-4 active:bg-gray-100"
-                        onClick={() => handleConsultationClick(consultation)}
-                      >
-                        <View className="flex items-start justify-between mb-2">
-                          <Text className="block text-sm font-medium text-gray-900 flex-1">
-                            {consultation.title}
-                          </Text>
-                          <View
-                            className={`px-2 py-0.5 rounded-full ml-2 ${
-                              consultation.status === 'replied'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-amber-100 text-amber-700'
-                            }`}
-                          >
-                            <Text className="text-xs font-medium">
-                              {consultation.status === 'replied' ? '已回复' : '待回复'}
+                      <View className="flex items-start gap-3">
+                        {/* 头像 */}
+                        <Image
+                          className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                          src={lawyer.avatar}
+                          mode="aspectFill"
+                        />
+
+                        {/* 信息 */}
+                        <View className="flex-1">
+                          <View className="flex items-center justify-between mb-1">
+                            <Text className="block text-sm font-bold text-gray-900">
+                              {lawyer.name}
+                            </Text>
+                            <Text className="text-xs text-gray-400">
+                              {formatTime(item.viewed_at)}
                             </Text>
                           </View>
-                        </View>
-                        <Text className="block text-xs text-gray-500 mb-2">
-                          {consultation.createTime}
-                        </Text>
-                        <Text className="block text-sm text-gray-600 line-clamp-2">
-                          {consultation.content}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-
-                {consultations.length > 0 && (
-                  <View className="mt-4">
-                    <View
-                      className="bg-green-900 text-white rounded-xl py-3 px-6 w-full text-center active:bg-green-800"
-                      onClick={handleNewConsultation}
-                    >
-                      <Text className="block text-sm font-medium">发起新咨询</Text>
-                    </View>
-                  </View>
-                )}
-              </View>
-            </>
-          )}
-
-          {/* 合伙人视图 */}
-          {userInfo.role === 'partner' && (
-            <>
-              {/* 咨询消息 */}
-              <View className="bg-white rounded-2xl p-5 mb-4 shadow-sm">
-                <View className="flex items-center justify-between mb-4">
-                  <View className="flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5 text-green-700" />
-                    <Text className="block text-base font-bold text-gray-900">
-                      咨询消息
-                    </Text>
-                  </View>
-                  <Text className="text-sm text-gray-500">
-                    {consultations.filter((c) => c.status === 'pending').length} 条待回复
-                  </Text>
-                </View>
-
-                {consultations.length === 0 ? (
-                  <View className="text-center py-8">
-                    <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-3" />
-                    <Text className="block text-sm text-gray-500">暂无咨询消息</Text>
-                  </View>
-                ) : (
-                  <View className="space-y-3">
-                    {consultations.map((consultation) => (
-                      <View
-                        key={consultation.id}
-                        className={`rounded-xl p-4 active:opacity-80 ${
-                          consultation.status === 'pending'
-                            ? 'bg-amber-50 border border-amber-200'
-                            : 'bg-gray-50'
-                        }`}
-                        onClick={() => handleConsultationClick(consultation)}
-                      >
-                        <View className="flex items-start justify-between mb-2">
-                          <Text className="block text-sm font-medium text-gray-900 flex-1">
-                            {consultation.title}
+                          <Text className="block text-xs font-medium text-green-700 mb-2">
+                            {lawyer.title}
                           </Text>
-                          <View
-                            className={`px-2 py-0.5 rounded-full ml-2 ${
-                              consultation.status === 'replied'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-amber-100 text-amber-700'
-                            }`}
-                          >
-                            <Text className="text-xs font-medium">
-                              {consultation.status === 'replied' ? '已回复' : '待回复'}
-                            </Text>
+                          <View className="flex flex-wrap gap-1">
+                            {specialties.slice(0, 2).map((specialty, index) => (
+                              <View
+                                key={index}
+                                className="bg-green-50 text-green-900 px-2 py-0.5 rounded"
+                              >
+                                <Text className="text-xs">{specialty}</Text>
+                              </View>
+                            ))}
                           </View>
                         </View>
-                        <Text className="block text-xs text-gray-500 mb-2">
-                          {consultation.createTime}
-                        </Text>
-                        <Text className="block text-sm text-gray-600 line-clamp-2">
-                          {consultation.content}
-                        </Text>
+                        <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
                       </View>
-                    ))}
-                  </View>
-                )}
+                    </View>
+                  )
+                })}
               </View>
-            </>
-          )}
+            )}
+          </View>
 
           {/* 其他菜单 */}
           <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
