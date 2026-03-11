@@ -75,6 +75,9 @@ const PartnerDetailPage: FC = () => {
       if (res.data?.code === 200 && res.data.data) {
         const lawyerData = res.data.data
         setLawyer(lawyerData)
+
+        // 记录浏览历史
+        await recordViewHistory(id)
       } else {
         Taro.showToast({
           title: '未找到律师信息',
@@ -92,6 +95,28 @@ const PartnerDetailPage: FC = () => {
       })
     } finally {
       setLoading(false)
+    }
+  }
+
+  // 记录浏览历史
+  const recordViewHistory = async (lawyerId: number) => {
+    try {
+      const token = Taro.getStorageSync('token')
+      if (!token) {
+        // 未登录，不记录
+        return
+      }
+
+      await Network.request({
+        url: '/api/viewed-lawyers/record',
+        method: 'POST',
+        data: { lawyerId }
+      })
+
+      console.log('浏览历史记录成功')
+    } catch (error) {
+      // 记录失败不影响页面正常显示
+      console.error('记录浏览历史失败:', error)
     }
   }
 

@@ -59,6 +59,18 @@ export const lawyers = pgTable("lawyers", {
   index("lawyers_is_active_idx").on(table.isActive),
 ])
 
+// 浏览记录表
+export const viewedLawyers = pgTable("viewed_lawyers", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  lawyerId: integer("lawyer_id").notNull().references(() => lawyers.id),
+  viewedAt: timestamp("viewed_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+  index("viewed_lawyers_user_id_idx").on(table.userId),
+  index("viewed_lawyers_lawyer_id_idx").on(table.lawyerId),
+  index("viewed_lawyers_user_lawyer_idx").on(table.userId, table.lawyerId),
+])
+
 // Zod Schemas for validation
 const { createInsertSchema: createCoercedInsertSchema } = createSchemaFactory({
   coerce: { date: true },
@@ -99,3 +111,5 @@ export type Admin = typeof admins.$inferSelect
 export type Lawyer = typeof lawyers.$inferSelect
 export type InsertLawyer = z.infer<typeof insertLawyerSchema>
 export type UpdateLawyer = z.infer<typeof updateLawyerSchema>
+export type ViewedLawyer = typeof viewedLawyers.$inferSelect
+
