@@ -38,37 +38,30 @@ const PartnerDetailPage: FC = () => {
 
   // 配置分享功能
   useShareAppMessage(() => {
-    // 确保返回有效数据，避免"当前页面不可分享"
     if (!lawyer) {
       return {
-        title: '德恒律师事务所',
-        path: '/pages/index/index',
-        imageUrl: ''
+        title: '德恒律师事务所律师名片',
+        path: '/pages/index/index'
       }
     }
 
     return {
-      title: `${lawyer.name} - ${lawyer.title}\n📍 ${lawyer.location}\n${lawyer.phone ? '📞 ' + lawyer.phone : ''}`,
-      path: `/pages/partner-detail/index?id=${lawyer.id}`,
-      imageUrl: lawyer.avatar || ''
+      title: `${lawyer.name} - ${lawyer.title}`,
+      path: `/pages/partner-detail/index?id=${lawyer.id}`
     }
   })
 
   // 配置分享到朋友圈
   useShareTimeline(() => {
-    // 确保返回有效数据，避免"当前页面不可分享"
     if (!lawyer) {
       return {
-        title: '德恒律师事务所',
-        query: '',
-        imageUrl: ''
+        title: '德恒律师事务所律师名片'
       }
     }
 
     return {
-      title: `${lawyer.name} - ${lawyer.title} - 德恒律师事务所`,
-      query: `id=${lawyer.id}`,
-      imageUrl: lawyer.avatar || ''
+      title: `${lawyer.name} - ${lawyer.title} 德恒律师事务所`,
+      query: `id=${lawyer.id}`
     }
   })
 

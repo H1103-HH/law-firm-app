@@ -1,3 +1,11 @@
 export default typeof definePageConfig === 'function'
-  ? definePageConfig({ navigationBarTitleText: '' })
-  : { navigationBarTitleText: '' }
+  ? definePageConfig({
+    navigationBarTitleText: '',
+    enableShareAppMessage: true,
+    enableShareTimeline: true
+  })
+  : {
+    navigationBarTitleText: '',
+    enableShareAppMessage: true,
+    enableShareTimeline: true
+  }
