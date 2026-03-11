@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
-import { ArrowRight, Search } from 'lucide-react-taro'
+import { ArrowRight, Search, User } from 'lucide-react-taro'
 import type { FC } from 'react'
 import { Network } from '@/network'
 import './index.css'
@@ -26,6 +26,7 @@ const PartnersPage: FC = () => {
   const [lawyers, setLawyers] = useState<Lawyer[]>([])
   const [loading, setLoading] = useState(true)
   const [searchKeyword, setSearchKeyword] = useState('')
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     loadLawyers()
@@ -155,6 +156,7 @@ const PartnersPage: FC = () => {
 
                 const handleImageError = () => {
                   console.error(`图片加载失败: ${lawyer.avatar}`)
+                  setFailedImages(prev => new Set(prev).add(lawyer.id))
                 }
 
                 return (
@@ -165,12 +167,19 @@ const PartnersPage: FC = () => {
                   >
                     <View className="flex items-start gap-4">
                       {/* 头像 */}
-                      <Image
-                        className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
-                        src={lawyer.avatar}
-                        mode="aspectFill"
-                        onError={handleImageError}
-                      />
+                      {failedImages.has(lawyer.id) ? (
+                        // 图片加载失败时显示默认图标
+                        <View className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-100 flex-shrink-0">
+                          <User className="w-8 h-8 text-green-600" />
+                        </View>
+                      ) : (
+                        <Image
+                          className="w-16 h-16 rounded-full object-cover border-2 border-green-100 flex-shrink-0"
+                          src={lawyer.avatar}
+                          mode="aspectFill"
+                          onError={handleImageError}
+                        />
+                      )}
 
                       {/* 信息 */}
                       <View className="flex-1">
