@@ -1,39 +1,57 @@
-import { View, Text, Button } from '@tarojs/components'
+import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState } from 'react'
 import { ArrowLeft } from 'lucide-react-taro'
+import { Network } from '@/network'
 import type { FC } from 'react'
 import './index.css'
 
 const AdminLoginPage: FC = () => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleWeChatLogin = async () => {
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Taro.showToast({
+        title: '请输入账号和密码',
+        icon: 'none'
+      })
+      return
+    }
+
     setLoading(true)
 
     try {
-      // 微信登录逻辑
-      const loginRes = await Taro.login()
-
-      // 这里可以调用后端接口进行微信登录
-      console.log('微信登录 code:', loginRes.code)
-
-      Taro.showToast({
-        title: '微信登录功能开发中',
-        icon: 'none'
+      const res = await Network.request({
+        url: '/api/admin/login',
+        method: 'POST',
+        data: { username, password }
       })
 
-      // TODO: 调用后端接口
-      // const res = await Network.request({
-      //   url: '/api/admin/wechat-login',
-      //   method: 'POST',
-      //   data: { code: loginRes.code }
-      // })
+      if (res.data?.code === 200) {
+        Taro.setStorageSync('adminToken', res.data.data.token)
+        Taro.setStorageSync('adminInfo', res.data.data)
 
+        Taro.showToast({
+          title: '登录成功',
+          icon: 'success'
+        })
+
+        setTimeout(() => {
+          Taro.redirectTo({
+            url: '/pages/admin/lawyers/index'
+          })
+        }, 1500)
+      } else {
+        Taro.showToast({
+          title: res.data?.msg || '登录失败',
+          icon: 'none'
+        })
+      }
     } catch (error) {
-      console.error('微信登录错误:', error)
       Taro.showToast({
-        title: '登录失败',
+        title: '网络错误，请重试',
         icon: 'none'
       })
     } finally {
@@ -48,37 +66,57 @@ const AdminLoginPage: FC = () => {
           className="navbar-btn"
           onClick={() => Taro.navigateBack()}
         >
-          <ArrowLeft size={20} color="#1a1a1a" />
+          <ArrowLeft size={20} color="#333" />
         </Button>
       </View>
 
       <View className="content">
+        {/* 标题区域 */}
         <View className="header">
-          <Text className="title">管理员登录</Text>
-          <Text className="subtitle">德恒律师事务所</Text>
+          <Text className="title">欢迎回来！</Text>
+          <Text className="subtitle">欢迎使用，德恒律师事务所管理系统</Text>
         </View>
 
-        <View className="login-method">
-          <Text className="method-title">使用微信登录</Text>
-        </View>
-
-        <Button
-          className="wechat-btn"
-          onClick={handleWeChatLogin}
-          disabled={loading}
-        >
-          <View className="wechat-btn-content">
-            <View className="wechat-icon-wrapper">
-              <Text className="wechat-icon-text">微</Text>
+        {/* 输入框区域 */}
+        <View className="form-section">
+          <View className="input-group">
+            <View className="input-wrapper">
+              <Text className="input-icon">👤</Text>
+              <Input
+                className="input"
+                type="text"
+                placeholder="请输入账号"
+                value={username}
+                onInput={(e) => setUsername(e.detail.value)}
+                placeholderClass="input-placeholder"
+              />
             </View>
-            <Text className="wechat-btn-text">
-              {loading ? '登录中...' : '微信一键登录'}
-            </Text>
           </View>
-        </Button>
 
-        <View className="tips">
-          <Text className="tips-text">首次登录将自动创建管理员账号</Text>
+          <View className="input-group">
+            <View className="input-wrapper">
+              <Text className="input-icon">🔒</Text>
+              <Input
+                className="input"
+                type="text"
+                password
+                placeholder="请输入密码"
+                value={password}
+                onInput={(e) => setPassword(e.detail.value)}
+                placeholderClass="input-placeholder"
+              />
+            </View>
+          </View>
+
+          <Button
+            className="submit-btn"
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            <Text className="submit-btn-text">
+              {loading ? '登录中...' : '登录'}
+            </Text>
+          </Button>
         </View>
       </View>
     </View>
