@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "张伟",
+    "title": "高级合伙人",
+    "description": "专注于公司法和并购业务，拥有20年执业经验",
+    "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+    "specialties": "公司法、并购重组、企业上市",
+    "phone": "13800138001",
+    "email": "zhangwei@dehenglaw.com",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "李娜",
+    "title": "合伙人",
+    "description": "知识产权领域专家，曾代理多起知名案件",
+    "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+    "specialties": "知识产权、专利申请、商标注册",
+    "phone": "13800138002",
+    "email": "lina@dehenglaw.com",
+    "created_at": "2024-01-02T00:00:00.000Z",
+    "updated_at": "2024-01-02T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "王强",
+    "title": "高级合伙人",
+    "description": "刑事辩护专家，成功案例众多",
+    "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+    "specialties": "刑事辩护、经济犯罪辩护",
+    "phone": "13800138003",
+    "email": "wangqiang@dehenglaw.com",
+    "created_at": "2024-01-03T00:00:00.000Z",
+    "updated_at": "2024-01-03T00:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "刘芳",
+    "title": "合伙人",
+    "description": "劳动法专家，帮助企业处理劳动争议",
+    "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+    "specialties": "劳动法、劳动合同、工伤赔偿",
+    "phone": "13800138004",
+    "email": "liufang@dehenglaw.com",
+    "created_at": "2024-01-04T00:00:00.000Z",
+    "updated_at": "2024-01-04T00:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "name": "陈明",
+    "title": "高级合伙人",
+    "description": "房地产与建设工程领域专家",
+    "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+    "specialties": "房地产法、建设工程合同、物业管理",
+    "phone": "13800138005",
+    "email": "chenming@dehenglaw.com",
+    "created_at": "2024-01-05T00:00:00.000Z",
+    "updated_at": "2024-01-05T00:00:00.000Z"
+  }
+]
