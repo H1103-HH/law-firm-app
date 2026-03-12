@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: law-firm-app-server
+    env: node
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: COZE_SUPABASE_URL
+        value: https://xcadxajiavehzzhqahd.supabase.co
+      - key: COZE_SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhjYWR4YWppYXZlaHp6aHFhaGQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczNDUzNzU3OSwiZXhwIjoyMDUwMTEzNTc5fQ.XcVQfP8hK3rX5vY7rP2qK5tL8mN0jD5wG8hJ2kL5mN0
+      - key: DATABASE_URL
+        value: postgresql://postgres:gaoxinjing2000@aws-0-ap-northeast-1.pooler.supabase.co:6543/postgres
