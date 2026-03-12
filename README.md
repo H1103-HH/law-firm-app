@@ -89,6 +89,47 @@ pnpm build:server # 仅构建后端
 pnpm preview:weapp # 构建并生成预览小程序二维码
 ```
 
+## 生产环境配置
+
+⚠️ **重要**：小程序上线前必须配置后端 API 域名，否则无法正常使用！
+
+### 快速配置
+
+1. **创建环境变量文件**
+
+   ```bash
+   # 复制模板文件
+   cp .env.local.example .env.local
+
+   # 编辑 .env.local，修改为实际的后端域名
+   # PROJECT_DOMAIN=https://your-backend-api.com
+   ```
+
+2. **配置微信小程序合法域名**
+
+   登录 [微信公众平台](https://mp.weixin.qq.com/)：
+   - 进入"开发" -> "开发管理" -> "开发设置"
+   - 在"服务器域名"的"request合法域名"中添加后端 API 域名
+
+3. **重新构建小程序**
+
+   ```bash
+   pnpm build:weapp
+   ```
+
+### 详细说明
+
+请查看 [PRODUCTION_CONFIG.md](./PRODUCTION_CONFIG.md) 了解详细配置。
+
+### 常见问题
+
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| request:fail url not in domain list | 域名未配置 | 在微信公众平台添加 request 合法域名 |
+| request:fail 需要 HTTPS | 使用了 HTTP 协议 | 必须使用 HTTPS 协议 |
+| 小程序上线后无法加载数据 | PROJECT_DOMAIN 未配置 | 创建 .env.local 文件配置后端域名 |
+| 接口返回 404 | API 路径错误 | 检查代码中的 API 路径是否正确 |
+
 ## 前端核心开发规范
 
 ### 新建页面流程
