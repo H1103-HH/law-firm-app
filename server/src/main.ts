@@ -4,6 +4,10 @@ import * as express from 'express';
 import { HttpStatusInterceptor } from '@/interceptors/http-status.interceptor';
 
 function parsePort(): number {
+  // Vercel 会提供 PORT 环境变量
+  if (process.env.PORT) {
+    return parseInt(process.env.PORT, 10);
+  }
   const args = process.argv.slice(2);
   const portIndex = args.indexOf('-p');
   if (portIndex !== -1 && args[portIndex + 1]) {
