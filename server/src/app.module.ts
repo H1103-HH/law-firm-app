@@ -8,9 +8,10 @@ import { AdminModule } from './admin/admin.module';
 import { UploadModule } from './upload/upload.module';
 import { ViewedLawyersModule } from './viewed-lawyers/viewed-lawyers.module';
 import { SavedCardsModule } from './saved-cards/saved-cards.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
-  imports: [ConsultationsModule, AuthModule, LawyerModule, AdminModule, UploadModule, ViewedLawyersModule, SavedCardsModule],
+  imports: [ConsultationsModule, AuthModule, LawyerModule, AdminModule, UploadModule, ViewedLawyersModule, SavedCardsModule, HealthModule],
   controllers: [AppController],
   providers: [AppService],
 })
