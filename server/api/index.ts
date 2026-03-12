@@ -2,35 +2,55 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
 import * as express from 'express';
+import serverless from 'serverless-http';
 
-let cachedApp: any;
+let cachedServer: any;
 
-const bootstrap = async () => {
-  if (!cachedApp) {
+async function bootstrap() {
+  if (!cachedServer) {
+    console.log('Initializing NestJS app...');
     const expressApp = express();
-    const app = await NestFactory.create(
-      AppModule,
-      new ExpressAdapter(expressApp)
-    );
 
-    app.enableCors({
-      origin: true,
-      credentials: true,
-    });
+    try {
+      const app = await NestFactory.create(
+        AppModule,
+        new ExpressAdapter(expressApp),
+        { logger: ['error', 'warn', 'log'] }
+      );
 
-    // 移除全局前缀，由 Vercel Serverless Function 处理 /api 路径
-    // app.setGlobalPrefix('api');
-    app.use(express.json({ limit: '50mb' }));
-    app.use(express.urlencoded({ limit: '50mb', extended: true }));
+      app.enableCors({
+        origin: '*',
+        credentials: true,
+      });
 
-    await app.init();
-    cachedApp = expressApp;
+      app.use(express.json({ limit: '50mb' }));
+      app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+      await app.init();
+      console.log('NestJS app initialized successfully');
+
+      // 使用 serverless-http 包装 Express 应用
+      cachedServer = serverless(expressApp);
+    } catch (error) {
+      console.error('Failed to initialize NestJS app:', error);
+      throw error;
+    }
   }
 
-  return cachedApp;
-};
+  return cachedServer;
+}
 
-export default async (req: any, res: any) => {
-  const app = await bootstrap();
-  app(req, res);
-};
+export default async function handler(req: any, res: any) {
+  console.log(`Request: ${req.method} ${req.url}`);
+  try {
+    const server = await bootstrap();
+    return server(req, res);
+  } catch (error) {
+    console.error('Handler error:', error);
+    res.status(500).json({
+      code: 500,
+      msg: 'Internal Server Error',
+      error: error.message
+    });
+  }
+}
